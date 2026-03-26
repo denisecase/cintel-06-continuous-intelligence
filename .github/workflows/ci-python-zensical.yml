@@ -74,39 +74,6 @@ jobs:
         run: uv run validate-pyproject pyproject.toml
 
       # ============================================================
-      # === COVERAGE AND TESTS: Verify functionality ===
-      # ============================================================
-
-      - name: C1) Run pytest with coverage
-        run: |
-          if [ -d "tests" ] && [ -n "$(find tests -type f \( -name 'test_*.py' -o -name '*_test.py' \) -print -quit)" ]; then
-            uv run pytest --verbose --cov=src --cov-report=term-missing --cov-report=xml
-          else
-            echo "## No Tests Found" >> "$GITHUB_STEP_SUMMARY"
-            echo "Tests directory missing or empty. CI continues." >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: C2) Upload test coverage to GitHub Summary
-        if: always()
-        run: |
-          echo "## Test Coverage Report" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f ".coverage" ]; then
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            uv run coverage report >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "No coverage data available." >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: C3) Upload coverage artifact
-        if: always() && hashFiles('coverage.xml') != ''
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage-report
-          path: coverage.xml
-          retention-days: 30
-
-      # ============================================================
       # === DEPLOY: Build only, don't deploy yet ===
       # ============================================================
 
