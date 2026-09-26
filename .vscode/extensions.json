@@ -1,49 +1,90 @@
+// ============================================================
+// .vscode/extensions.json (ALL-PY-SRC-REPOS)
+// ============================================================
+// Updated: 2026-08-22
+// Basis: cross-platform (all 3 OS), popular, reliable.
+// NOTE: Comments are not allowed in standard JSON files,
+//       but Microsoft allows them in their .vscode config files (JSONC).
+//       "recommendations" prompt on a fresh clone;
+//       "unwantedRecommendations" are hidden.
+//       A formatter named in settings.json should be recommended here
+//       or formatting silently does nothing on a clone.
 {
   "recommendations": [
     // ============================================================
     // === TODO Task Management ===
     // ============================================================
-    "gruntfuggly.todo-tree", // TODO/FIXME comment tracking
+    // "gruntfuggly.todo-tree", // TODO comment tracking
+
     // ============================================================
     // === PYTHON DEVELOPMENT ===
     // ============================================================
     "ms-python.python", // Core Python support
-    "ms-python.vscode-pylance", // Fast IntelliSense and type checking
     "charliermarsh.ruff", // Modern formatting and linting (replaces black + isort + flake8)
+    "astral-sh.ty", // Fast Python type checking and language support
+
+    // ============================================================
+    // === NOTEBOOKS ===
+    // ============================================================
+    "marimo-team.vscode-marimo", // Marimo notebook support
+    // "ms-toolsai.jupyter", // Core Jupyter support for .ipynb files
+    // "ms-toolsai.jupyter-keymap", // Jupyter keyboard shortcuts in VS Code
+    // "ms-toolsai.jupyter-renderers", // Rich output rendering (plots, dataframes)
+    // "ms-toolsai.vscode-jupyter-cell-tags", // Cell tagging for notebook organization
+
     // ============================================================
     // === FILE PATH ASSISTANCE ===
     // ============================================================
     "christian-kohler.path-intellisense", // Autocomplete for file paths in Python strings (e.g., "data/file.csv")
     // NOTE: Terminal autocomplete (tab/right-arrow) is built into your shell (bash/zsh/PowerShell), not VS Code
+
     // ============================================================
     // === MARKDOWN AND DOCUMENTATION ===
     // ============================================================
     "yzhang.markdown-all-in-one", // Shortcuts, TOC, formatting for .md files
     "bierner.markdown-preview-github-styles", // GitHub-style markdown preview
+    "esbenp.prettier-vscode", // Markdown formatting (see [markdown] in settings.json)
+    "denisecase.comment-section-outline", // Show "# === Section ===" banners in the Outline view
     // "bierner.markdown-mermaid", // Diagram rendering in markdown (flowcharts, etc.)
+
     // ============================================================
     // === DATA FILES AND CONFIGURATION ===
     // ============================================================
     "redhat.vscode-yaml", // YAML syntax, validation, formatting
     "tamasfe.even-better-toml", // TOML syntax, validation (for pyproject.toml)
     "mechatroner.rainbow-csv", // Color-code CSV columns for readability
+
     // ============================================================
     // === PROJECT INFRASTRUCTURE ===
     // ============================================================
     "editorconfig.editorconfig", // Respects .editorconfig settings (indentation, line endings)
-    "github.vscode-github-actions", // Syntax highlighting for .github/workflows/*.yml
+    "github.vscode-github-actions" // Syntax highlighting for .github/workflows/*.yml
+
+    // ============================================================
+    // === DATABASE TOOLS ===
+    // ============================================================
+    // "mtxr.sqltools", // SQL query editor and database connections
+    // "qwtel.sqlite-viewer", // View .db files as tables in VS Code
+    // "ChuckJonas.duckdb", // DuckDB client: query CSV/Parquet/.duckdb in-editor (unofficial; no official ext exists)
+    // "RandomFractalsInc.duckdb-sql-tools", // alt: DuckDB SQL Tools (Preview)
+
+    // ============================================================
+    // === OPTIONAL (try if you want) ===
+    // ============================================================
+    // "fill-labs.dependi", // depdency update notifications in VS Code
+    // "usernamehw.errorlens", // Inline error messages - helpful but can be noisy
+    // "eamodio.gitlens", // Git history visualization - powerful but can be noisy
   ],
   "unwantedRecommendations": [
     // ============================================================
     // === NOT RECOMMENDED: CONFLICTS WITH CURRENT SETUP ===
     // ============================================================
-    "esbenp.prettier-vscode", // We use ruff for Python, built-in formatters for JSON/YAML
-    "ms-pyright.pyright", // Use Pylance (Pyright engine) instead to avoid duplicate diagnostics
+    "ms-pyright.pyright", // Switching to uv ty for type checking
+    "ms-python.vscode-pylance", // Switching to uv ty for type checking
     "ms-python.black-formatter", // We use ruff format instead
     "ms-python.isort", // We use ruff for import sorting
     "ms-vscode.live-server", // Not needed for Python/analytics projects
     "ritwickdey.liveserver", // Duplicate of above
-    "ms-vscode-remote.remote-containers", // OPTIONAL: Not recommended - local dev preferred
-    "eamodio.gitlens", // OPTIONAL: Powerful for work; noisy for individual projects
+    "ms-vscode-remote.remote-containers" // OPTIONAL: Not recommended - local dev preferred
   ]
 }

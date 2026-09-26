@@ -1,24 +1,30 @@
 # ============================================================
-# .editorconfig (Keep files consistent across editors and IDEs)
+# .editorconfig (ALL-REPOS)
 # ============================================================
-# SOURCE: https://github.com/denisecase/templates
-
-# REQ.UNIVERSAL: All professional GitHub project repositories MUST include .editorconfig.
-# WHY: Establish a cross-editor baseline so diffs stay clean and formatting is consistent.
-# ALT: Repository may omit .editorconfig ONLY if formatting is enforced equivalently by CI and formatter tooling.
-# CUSTOM: Adjust indent_size defaults only if organizational standards change; keep stable across projects.
-# NOTE: Sections are ordered by editorial importance, not strict alphabetical order.
-# EditorConfig is documented at https://editorconfig.org
+# Updated: 2026-09-25
+#
+# REQ: All professional GitHub project repositories MUST include .editorconfig.
+# WHY: Establish a cross-editor baseline so diffs stay clean and formatting
+# is consistent across editors and IDEs.
+# ALT: Repository may omit .editorconfig ONLY if formatting is enforced
+# equivalently by CI and formatter tooling.
+# CUSTOM: Adjust indent_size defaults only if organizational standards change;
+# keep stable across projects.
+# EditorConfig: https://editorconfig.org
 
 root = true
 
 
-# === Global defaults (always apply) ===
+# === Core defaults ===
 
 [*]
 # WHY: Normalize line endings and encoding across Windows, macOS, and Linux.
-end_of_line = lf
 charset = utf-8
+end_of_line = lf
+
+# WHY: Default to 2 spaces for configs and markup; language-specific overrides follow.
+indent_size = 2
+indent_style = space
 
 # WHY: Newline at EOF avoids noisy diffs and tool warnings.
 insert_final_newline = true
@@ -26,20 +32,36 @@ insert_final_newline = true
 # WHY: Remove accidental whitespace noise in diffs.
 trim_trailing_whitespace = true
 
-# WHY: Default to 2 spaces for configs and markup; language-specific overrides follow.
-indent_style = space
+
+# === Named root and metadata files ===
+
+[CITATION.cff]
+# WHY: Citation tooling expects stable YAML formatting.
 indent_size = 2
+indent_style = space
+
+[CODEOWNERS]
+# WHY: CODEOWNERS is a structured text file; keep formatting simple and stable.
+indent_size = 2
+indent_style = space
+
+[LICENSE]
+# WHY: License text should remain plain, stable, and editor-neutral.
+indent_size = 2
+indent_style = space
 
 
-# === Build systems (special rules) ===
+# === Build systems ===
 
 [Makefile]
-# WHY: Makefiles require tabs.
+# WHY: Makefile recipe lines require real tab characters.
 indent_style = tab
+indent_size = tab
 
 [*.mk]
-# WHY: Makefile includes require tabs.
+# WHY: Makefile includes may contain recipes and should preserve real tabs.
 indent_style = tab
+indent_size = tab
 
 
 # === Markup and documentation ===
@@ -49,23 +71,38 @@ indent_style = tab
 indent_size = 2
 trim_trailing_whitespace = true
 
-[*.{tex,cls,sty}]
-# WHY: LaTeX convention is 2 spaces.
+[*.qmd]
+# WHY: Quarto Markdown follows Markdown-style formatting.
 indent_size = 2
 indent_style = space
 
-[*.xml]
-# WHY: XML convention is 2 spaces.
+[*.rst]
+# WHY: reStructuredText documentation benefits from stable 2-space indentation.
 indent_size = 2
 indent_style = space
 
-[*.{yml,yaml}]
-# WHY: YAML convention is 2 spaces.
+[*.{bib,cls,sty,tex,typ}]
+# WHY: LaTeX, BibTeX, and Typst source use a stable 2-space convention.
+indent_size = 2
+indent_style = space
+
+[*.{css,html,xml}]
+# WHY: Web and XML markup convention is 2 spaces.
 indent_size = 2
 indent_style = space
 
 
-# === Data and configuration ===
+# === Configuration and structured text ===
+
+[*.env]
+# WHY: Environment templates should remain simple line-oriented text.
+indent_size = 2
+indent_style = space
+
+[*.{cfg,ini}]
+# WHY: INI-style configuration convention is 2 spaces.
+indent_size = 2
+indent_style = space
 
 [*.{json,jsonc,jsonl,ndjson}]
 # WHY: JSON tooling typically expects 2 spaces.
@@ -77,16 +114,41 @@ indent_style = space
 indent_size = 4
 indent_style = space
 
-
-# === Programming languages ===
-
-[*.{js,ts}]
-# WHY: JS/TS ecosystem commonly uses 2 spaces.
+[*.{yaml,yml}]
+# WHY: YAML convention is 2 spaces.
 indent_size = 2
 indent_style = space
 
-[*.{py,pyi}]
-# WHY: Python convention is 4 spaces.
+
+# === Programming languages and scripts ===
+
+[*.{bat,cmd}]
+# WHY: Windows batch and command scripts use a simple 2-space shared baseline.
+indent_size = 2
+indent_style = space
+
+[*.{bash,sh}]
+# WHY: Shell script convention is 2 spaces.
+indent_size = 2
+indent_style = space
+
+[*.{c,cpp,cs,go,h,hpp,java,rs}]
+# WHY: Many C-family and systems languages commonly use 4 spaces.
+indent_size = 4
+indent_style = space
+
+[*.jl]
+# WHY: Julia convention commonly uses 4 spaces.
+indent_size = 4
+indent_style = space
+
+[*.{cjs,js,jsx,mjs,ts,tsx}]
+# WHY: JavaScript and TypeScript ecosystems commonly use 2 spaces.
+indent_size = 2
+indent_style = space
+
+[*.mojo]
+# WHY: Mojo uses Python-like syntax and commonly follows 4-space indentation.
 indent_size = 4
 indent_style = space
 
@@ -95,25 +157,41 @@ indent_style = space
 indent_size = 4
 indent_style = space
 
-[*.{c,cpp,h,java,cs,go,rs}]
-# WHY: Many C-family and systems languages commonly use 4 spaces.
+[*.{py,pyi}]
+# WHY: Python convention is 4 spaces.
 indent_size = 4
 indent_style = space
 
-[*.{sh,bash}]
-# WHY: Shell script convention is 2 spaces.
+[*.{r,R}]
+# WHY: R convention commonly uses 2 spaces.
+indent_size = 2
+indent_style = space
+
+[*.sql]
+# WHY: SQL formatting varies, but 2 spaces is a stable shared baseline.
 indent_size = 2
 indent_style = space
 
 
-# === Proof assistants and formal languages ===
+# === Formal, math, and proof languages ===
 
 [*.lean]
 # WHY: Lean 4 convention is 2 spaces; matches Mathlib and stdlib style.
 indent_size = 2
 indent_style = space
 
-[*.{v,vo}]
-# WHY: Coq convention is 2 spaces.
+
+# === Notebooks ===
+
+[*.ipynb]
+# WHY: Jupyter notebooks are JSON documents; keep embedded formatting stable.
+indent_size = 2
+indent_style = space
+
+
+# === Text and tabular data ===
+
+[*.{csv,dat,psv,tsv,txt,ged}]
+# WHY: Text and tabular data should remain simple line-oriented text.
 indent_size = 2
 indent_style = space

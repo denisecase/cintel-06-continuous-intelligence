@@ -1,36 +1,36 @@
 # ============================================================
-# .pre-commit-config.yaml (Python Hygiene)
+# .pre-commit-config.yaml (ALL-PY-SRC-REPOS)
 # ============================================================
-# VARIANT: python-hygiene
-# SOURCE: https://github.com/denisecase/templates
+# Updated: 2026-09-25
 #
-# REQ: Professional Python projects SHOULD include a .pre-commit-config.yaml
-# to minimize git diffs and support collaboration.
-# WHY: Provide fast, consistent checks before committing code.
+# REQ: Professional projects using Python src/ SHOULD include git hooks.
+# WHY: Minimize git diffs, catch common issues early, and support collaboration.
 #
 # OBS: These hooks use and do NOT override:
 #   - .editorconfig (whitespace / indentation)
 #   - .gitattributes (EOL normalization)
 #   - pyproject.toml (Python tool settings)
 #
-# OPTIONAL LOCAL USAGE (no repo venv required):
-#   You must have uv installed locally.
-#   Run these commands once in from the repo root to enable pre-commit:
+# OPTIONAL LOCAL USAGE (keep tools updated):
+#   uv run prek install --force
+#   uv run prek update
 #
-#   uv self update
-#   uvx pre-commit install
-#   uvx pre-commit run --all-files
+# OPTIONAL LOCAL USAGE (run all hooks on all git-tracked files):
+#   git add -A
+#   uv run prek run --all-files
+#   The first time, it may indicate errors / fixes,
+#   So just re-run the command (up arrow) and it often goes all green.
 #
-# This enables the pre-commit hooks for this project repo.
-# ALL subsequent commits in this repo will AUTOMATICALLY run these
-# pre-commit hooks, after `git add` and before `git commit`.
-#
-# NOTE: enabling pre-commit is optional. It is not needed to clone or commit.
+# NOTE: Enabling hooks is optional. It is not needed to clone or commit.
+# You can skip it with the --no-verify option, e.g.:
+#   git commit -m "your message" --no-verify
 
 exclude: |
   (?x)^(
-    \.DS_Store|
+    .*\.egg-info/|
+    .*\.log|
     \.coverage|
+    \.DS_Store|
     \.ipynb_checkpoints/|
     \.mypy_cache/|
     \.nox/|
@@ -38,8 +38,6 @@ exclude: |
     \.ruff_cache/|
     \.tox/|
     \.venv/|
-    .*\.(egg-info)/|
-    .*\.log|
     __pycache__/|
     _minted.*/|
     build/|
@@ -75,12 +73,12 @@ repos:
         name: A3) Normalize line endings to LF before linters
         args: [--fix=lf] # OBS: Windows working copies may be CRLF.
 
-      #  === PRE-COMMIT: CHECK DATA FILE FORMATS ===
+      # === PRE-COMMIT: CHECK DATA FILE FORMATS ===
 
       - id: check-json
         name: B1) Validate JSON syntax (except .vscode/)
-        # WHY: VSCode settings may include comments, which are non-standard JSON.
-        exclude: ^\.vscode/.*\.json$
+        # WHY: VS Code settings may include comments, which are non-standard JSON.
+        exclude: (^|/)\.vscode/.*\.json$
 
       - id: check-toml
         name: B2) Validate TOML syntax
@@ -88,14 +86,14 @@ repos:
       - id: check-yaml
         name: B3) Validate YAML syntax
         files: \.(yml|yaml)$
-        # WHY: VS Code config files are editor-specific
-        exclude: ^(\.vscode/)
+        # WHY: VS Code config files are editor-specific.
+        exclude: ^\.vscode/
 
-      # === PRE-COMMIT:CHECK FOR COMMON PROBLEMS ===
+      # === PRE-COMMIT: CHECK FOR COMMON PROBLEMS ===
 
       - id: check-added-large-files
         name: C1) Prevent accidental commits of large binaries
-        args: [--maxkb=2000] # WHY: 2MB is a common threshold for large files that should not be committed to git.
+        args: [--maxkb=2000] # WHY: 2MB is a common threshold for large files
 
       - id: check-merge-conflict
         name: C2) Prevent committing merge conflicts
@@ -106,7 +104,7 @@ repos:
   # === REPO: RUFF PRE-COMMIT (for Python code) ===
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.16.9
     hooks:
       # === RUFF PRE-COMMIT CHECKS ===
       - id: ruff-format
@@ -116,7 +114,6 @@ repos:
         name: D2) Ruff linter (autofix errors, style issues )
         args: [--fix, --exit-non-zero-on-fix]
 
-
 # === GLOBAL SETTINGS ===
 # ALT: Set fail_fast to true to stop at first failure.
-fail_fast: false # Run all hooks even if one fails
+fail_fast: false # WHY: Run all hooks so all issues are visible at once.

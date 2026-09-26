@@ -1,0 +1,88 @@
+# ============================================================
+# .github/lychee.toml (ALL-REPOS)
+# ============================================================
+# Updated: 2026-09-25
+#
+# REQ: Repositories with documentation SHOULD check links automatically.
+# WHY: Broken links reduce the reliability and reproducibility of documentation,
+# references, instructions, and external resources.
+# REQ: Link checking MUST be reliable and CI-safe.
+# WHY: Configuration should detect genuinely broken links while minimizing
+# false failures caused by rate limiting, authentication, and anti-bot services.
+# OBS: Lychee configuration uses a flat structure for these options.
+# OBS: Repository-specific path exclusions should be added only when needed.
+# CUSTOM: Add exclusions only for links or paths that are known to be unsuitable
+# for automated checking.
+#
+# Lychee: https://lychee.cli.rs/
+
+# === Output ===
+
+# WHY: Provide enough information to diagnose failures without excessive CI noise.
+verbose = "info"
+
+# WHY: Interactive progress bars are not useful in CI logs.
+no_progress = true
+
+# === Request reliability ===
+
+# WHY: Limit parallel requests so CI does not overwhelm external servers.
+max_concurrency = 6
+
+# WHY: Retry transient network failures before declaring a link broken.
+max_retries = 3
+
+# WHY: Allow transient rate limits or service interruptions time to clear.
+retry_wait_time = 8
+
+# WHY: Prevent an unresponsive external service from blocking the workflow indefinitely.
+timeout = 30
+
+# === Accepted HTTP responses ===
+
+# WHY: Accept common status codes that don't indicate broken links
+# OBS: 403 and 429 reduce false positives
+accept = [
+  "200..=299", # OK, partial content, etc.
+  301, # Moved permanently
+  302, # Found (temporary redirect)
+  307, # Temporary redirect
+  308, # Permanent redirect
+  403, # Forbidden (often false positive)
+  429, # Too many requests (rate limiting)
+]
+
+# === Network exclusions ===
+
+# WHY: Localhost and loopback URLs describe local development services and are
+# not expected to resolve from GitHub Actions.
+exclude_loopback = true
+
+# === URL exclusions ===
+
+# WHY: Exclude external services known to block or interfere with automated
+# link-checking requests.
+# NOTE: Values are regular expressions matched against URLs.
+exclude = [
+  "^https://shields\\.io", # WHY: Shields.io badges often have anti-bot measures that cause false positives
+  "^https://img\\.shields\\.io", # WHY: Shields.io image badges often have anti-bot measures that cause false positives
+  "^https://badges\\.github\\.com", # WHY: GitHub badges often have anti-bot measures that cause false positives
+  "^https://www\\.linkedin\\.com", # WHY: LinkedIn often blocks automated requests, causing false positives
+  "example\\.com",   # WHY: Exclude example domains in documentation
+  "localhost",       # WHY: Exclude local development URLs
+  "127\\.0\\.0\\.1", # WHY: Exclude local loopback
+  "\\.local",        # WHY: Exclude local network domains
+]
+
+# === Path exclusions ===
+
+# WHY: Exclude paths not relevant for link checking.
+# NOTE: These names are used by the shared template repository and are harmless
+# in repositories that do not contain matching paths.
+exclude_path = [
+  "ALL",
+  "ALL-PY",
+  "ALL-PY-SRC",
+  "ALL-COURSE",
+  "ALL-COURSE-PY-SRC",
+]

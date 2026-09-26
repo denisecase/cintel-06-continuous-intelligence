@@ -1,8 +1,12 @@
 # ============================================================
-# pyproject.toml (Python project configuration)
+# pyproject.toml (ALL-PY-SRC-REPOS)
 # ============================================================
-# REQ.PYTHON: Python projects MUST include pyproject.toml as the single source of truth.
-# WHY: Centralizes project configuration.
+# REQ: Python projects SHOULD include pyproject.toml as the single source of truth.
+# WHY: Centralizes Python project configuration.
+
+# ============================================================
+# === SECTION 1: PROJECT IDENTITY ===
+# ============================================================
 
 [project]
 name = "cintel" # Package distribution name (lowercase and dashes).
@@ -11,112 +15,113 @@ requires-python = ">=3.14"
 version = "0.1.0"
 
 dependencies = [
-    # REQ.DEPS: External packages used by the project code.
-    "datafun-toolkit",
+    # REQ: External packages used by the project code.
+    "datafun-toolkit", # WHY: Provides professional Python utilities for privacy-preserving logging.
+    "marimo", # WHY: Enables reactive web app for app.py.
     "polars[rtcompat]",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 # WHY: Optional dependency groups keep the core install clean and focused.
 dev = [
-    # REQ.DEV.DEPS: External packages used for linting, testing, type checking, etc.
-    "packaging",
-    "pre-commit",
-    "ruff",
-    "validate-pyproject",
+    # REQ: External packages used for linting, testing, type checking, etc.
+    "prek",       # WHY: Run repository hooks for consistent formatting, linting, and checks.
+    "pytest>=9",  # WHY: Test framework for unit and integration tests.
+    "pytest-cov", # WHY: Test coverage reporting for quality assurance.
+    "ruff",       # WHY: Fast linting and formatting for code quality and consistency.
+    "ty",         # WHY: Type checking for static analysis and bug prevention (replaces pyright).
+]
+docs = [
+    # REQ: External packages used to generate project documentation.
+    "mkdocstrings[python]", # WHY: Auto-generate API docs from docstrings.
+    "zensical",             # WHY: Generate and maintain project documentation.
 ]
 
-docs = [
-    # REQ.DOCS.DEPS: External packages used to generate project documentation.
-    "mkdocstrings[python]",
-    "zensical",
+
+# ============================================================
+# SECTION 2: TOOL CONFIGURATION
+# ============================================================
+
+# === MARIMO REACTIVE NOTEBOOKS ===
+
+[tool.marimo.save]
+autosave = "after_delay"
+autosave_delay = 1000
+format_on_save = true
+
+[tool.marimo.package_management]
+manager = "uv"
+
+[tool.marimo.runtime]
+pythonpath = ["./src"]
+
+# === PYTEST (VERIFY LOGIC) ===
+
+[tool.pytest.ini_options]
+# WHY: Consistent test discovery and coverage visibility.
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = "--cov=src --cov-fail-under=20 --cov-report=term-missing"
+filterwarnings = [
+    "ignore:FigureCanvasAgg is non-interactive, and thus cannot be shown:UserWarning",
 ]
 
 # === RUFF (PYTHON FORMATTING AND LINTING) ===
 
-[tool.ruff]
-# WHY: Ruff provides fast linting and formatting with deterministic output.
-exclude = [
-    ".eggs",
-    "*.egg-info",
-    ".ruff_cache",
-    ".venv",
-    "__pycache__",
-    "build",
-    "dist",
-    "site",
-]
-line-length = 88 # WHY: PEP 8 standard line length, wrap when possible.
-preview = false # WHY: Stable features only; avoid preview features.
-target-version = "py313" # WHY: Match latest supported Python version.
-unsafe-fixes = false # WHY: Avoid potentially unsafe automatic fixes.
-
-[tool.ruff.format]
-# WHY: Formatter choices should be stable to keep diffs small and predictable.
-indent-style = "space" # See also .gitattributes for indent style.
-line-ending = "auto" # Match existing files and let .gitattributes handle it.
-quote-style = "preserve" # Preserve existing quote styles to minimize churn.
-
-[tool.ruff.lint]
-# WHY: Professional baseline rules without requiring advanced refactors.
-select = [
-    "E",   # Basic syntax and structural correctness
-    "F",   # Undefined names and unused imports
-    "W",   # Warnings that catch easy issues early
-    "I",   # Deterministic import ordering
-    "UP",  # Modern Python constructs
-    "B",   # Common bug patterns
-    "PTH", # Prefer pathlib patterns
-]
-ignore = [
-  "E501", # Final line length handled by formatter
+[tool.ruff.lint] # WHY: Evolve with Ruff's defaults; production might pin an explicit set.
+extend-select = [
+    # --- turn on for additional linting rules ---
+    # "D",  # WHY: Require docstrings; VS Code helps generate them.
 ]
 
-[tool.ruff.lint.isort]
-# WHY: Ordering imports helps keep code diffs (differences) readable.
-force-sort-within-sections = false # WHY: Avoid unnecessary churn by only sorting within sections.
+[tool.ruff.lint.isort] # WHY: Sort plain-import and from-import lines together within each section.
+force-sort-within-sections = true
 
-# === PER-FILE IGNORES (DEPENDS ON DOCSTRING POLICY) ===
+[tool.ruff.lint.per-file-ignores] # WHY: Some file types need lint exceptions.
+"src/**/__init__.py" = ["F401"] # Allow re-export patterns.
+"src/**/_version.py" = ["ALL"] # Auto-generated file; do not lint.
+"tests/**/*.py" = ["D", "B018"] # Tests need no docstrings; B018 is default-on.
+"notebooks/**/*.py" = [
+    "D",
+    "PLR1711",
+    "RUF059",
+] # marimo cells: bare returns + cell-scoped unused vars are the format, not defects
+"src/**/notebook.py" = [
+    "B018",
+    "D",
+    "PLR1711",
+    "RUF059",
+] # marimo cells: bare returns + cell-scoped unused vars are the format, not defects
 
-[tool.ruff.lint.per-file-ignores]
-# WHY: Some files MUST NOT undergo linting or automated fixes.
+[tool.ruff.lint.pydocstyle] # WHY: Use Google docstring style when D is enabled.
+convention = "google"
 
-# POLICY: Docstring rules are NOT enabled (no "D" in [tool.ruff.lint].select).
-"src/**/__init__.py" = ["F401"]     # Allow re-export patterns
-"src/**/_version.py" = ["ALL"]      # Auto-generated file (do not lint)
-"notebooks/**/*.ipynb" = ["F821"]   # Notebooks may have runtime-defined names
+# === UV (PYTHON ENVIRONMENT AND DEPENDENCY MANAGEMENT) ===
 
-# === CHOOSE PROJECT DOC STYLE ===
+[tool.uv]
+# WHY: Install all dependency groups defined by this repository by default.
+# OBS: This keeps the canonical `uv sync` command identical across project types
+#      and ensures all repository features work after setup.
+default-groups = "all"
+# WHY: Give a bit of time to find hijacked releases before installing.
+# CUSTOM: Should match `uv run prek update --freeze --cooldown-days 7`
+exclude-newer = "7 days"
+# WHY: Some releases must be usable immediately.
+exclude-newer-package = { datafun-toolkit = false, cintel = false }
 
-[tool.ruff.lint.pydocstyle]
-# WHY: Choose one docstring convention project-wide to avoid mixed styles and churn.
-# REQ: Google style is the default policy for this repository.
-convention = "google" # ALT: "numpy" (choose one convention project-wide)
-
-# === BUILD SYSTEM ===
+# ============================================================
+# SECTION 3: BUILD SYSTEM (boilerplate; CUSTOM src/ agreement)
+# ============================================================
 #
-# REQ.PROJECT:
-#   This project MUST define a build system and package discovery rules.
-#
-# WHY:
-#   A build backend and src/ package discovery make local imports,
-#   editable installs, tests, editors, and CI behave consistently.
-#
-# REQ.STRUCTURE:
-#   All importable Python code MUST live under src/.
-#
-# WHY:
-#   A src/ layout prevents accidental imports from the repository root
-#   and improves consistency across tools.
+# REQ.PROJECT: A build system MUST be declared for package discovery and publishing.
+# REQ.STRUCTURE: All importable code MUST live under src/.
+# WHY src/ layout: Prevents accidental imports from the repo root;
+#     ensures consistent behavior across IDEs, tests, CI, and PyPI.
+
 [build-system]
-# REQ.BUILD: A build backend MUST be declared to enable package discovery.
-build-backend = "setuptools.build_meta"
-requires = ["setuptools>=80.9.0"]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
 
-[tool.setuptools]
-# REQ.PACKAGES: Package discovery MUST be rooted at src/.
-package-dir = { "" = "src" }
-
-[tool.setuptools.packages.find]
-# WHY: Explicitly define package discovery location.
-where = ["src"]
+[tool.hatch.build.targets.wheel]
+# CUSTOM: Must match src/ folders.
+packages = ["src/cintel"] # REQ: Discovery rooted at src/.

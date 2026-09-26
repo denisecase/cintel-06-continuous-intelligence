@@ -52,8 +52,8 @@ import logging
 from pathlib import Path
 from typing import Final
 
-import polars as pl
 from datafun_toolkit.logger import get_logger, log_header, log_path
+import polars as pl
 
 # === CONFIGURE LOGGER ===
 

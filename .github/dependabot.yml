@@ -1,0 +1,47 @@
+# ============================================================
+# .github/dependabot.yml (ALL-REPOS)
+# ============================================================
+# Updated: 2026-09-25
+#
+# REQ: All repositories SHOULD track GitHub Actions updates automatically.
+# WHY: GitHub Actions are executable dependencies and may receive security,
+# reliability, or behavior updates.
+# OBS: Language-level dependencies (for example, Python packages) are upgraded
+# manually using the project's package-management workflow.
+# OBS: GitHub Actions are the only dependency class automated here.
+# ALT: Dependabot version updates may be omitted when Actions are pinned and
+# reviewed manually through another established maintenance process.
+# CUSTOM: Adjust the schedule when repository activity or security posture
+# warrants a different review cadence.
+#
+# NOTE: Dependabot updates GitHub Actions references used in workflow files,
+# including Actions pinned to full commit SHAs.
+# NOTE: When a pinned Action has a version comment on the same line, Dependabot
+# can update that documentation along with the commit reference.
+# NOTE: Dependabot security updates are distinct from scheduled version updates
+# and can raise pull requests for vulnerable Actions when enabled in GitHub.
+#
+# Dependabot:
+# https://docs.github.com/code-security/dependabot
+
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+
+    # WHY: "/" tells Dependabot to inspect GitHub Actions workflows for this
+    # repository.
+    directory: "/"
+
+    schedule:
+      # WHY: Weekly checks keep executable CI dependencies reasonably current
+      # without creating daily maintenance noise.
+      interval: "weekly"
+
+    commit-message:
+      # WHY: Use a recognizable dependency prefix for filtering and history.
+      prefix: "(deps)"
+
+    cooldown:
+      default-days: 7
+      # WHY: Match the 7-day cooldown used by uv exclude-newer and prek.

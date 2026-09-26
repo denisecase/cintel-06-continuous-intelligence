@@ -1,0 +1,31 @@
+# ============================================================
+# .github/.yamllint.yml (ALL-REPOS)
+# ============================================================
+# Updated: 2026-09-25
+#
+# REQ: All repositories with YAML SHOULD lint YAML files
+# to keep them clean and consistent.
+# WHY: Detect malformed YAML, duplicate keys, indentation errors, trailing
+# whitespace, and other structural problems before they reach CI/CD tooling.
+# ALT: Style-only rules that create noise without improving correctness are
+# intentionally relaxed for GitHub Actions and shared project configuration.
+# yamllint: https://yamllint.readthedocs.io/
+
+extends: default
+
+rules:
+  # WHY: Workflow expressions, URLs, commands, and generated values can
+  # legitimately exceed an arbitrary line-length limit.
+  line-length: disable
+
+  # WHY: Repository YAML files do not require an explicit YAML document marker.
+  document-start: disable
+
+  # WHY: Comment layout is documentation style rather than YAML correctness.
+  comments: disable
+
+  # WHY: GitHub Actions uses `on` as a mapping key. Under YAML 1.1 semantics,
+  # yamllint may otherwise treat that key as a truthy value.
+  # WHY: Keep truthy-value checking for actual values while excluding keys.
+  truthy:
+    check-keys: false

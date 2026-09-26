@@ -1,76 +1,90 @@
 # ============================================================
-# .github/workflows/deploy-zensical.yml (Deploy Docs)
+# .github/workflows/deploy-zensical.yml (ALL-PY-REPOS)
 # ============================================================
-# SOURCE: https://github.com/denisecase/templates
+# Updated: 2026-08-18
 #
-# WHY-FILE: Build and deploy documentation to GitHub Pages on pushes to main.
+# WHY: Build and deploy documentation to GitHub Pages on pushes to main.
 # REQ: Repo Settings -> Pages -> Build and deployment -> Source:
 #      GitHub Actions
+# WHY: Without this setting, the deploy-pages action will fail with a 403.
+# REQ: Repository MUST contain .python-version.
+# WHY: The repository declares the Python version used locally and by CI.
+# REQ: Deployment MUST use the committed uv.lock without updating it.
 
+# Name shown in the repo Actions tab.
 name: Docs Deploy (Zensical)
 
 on:
   push:
-    branches: [main] # WHY: Run when pushing to main branch.
-  workflow_dispatch: # WHY: Allow manual triggering from Actions tab.
+    branches: [main]  # WHY: Deploy docs on every push to GitHub branch `main`.
+  workflow_dispatch:  # WHY: Allow manual trigger from Actions tab.
 
 permissions:
-  contents: read # WHY: Needed to checkout code.
-  pages: write # WHY: Required to deploy to GitHub Pages.
-  id-token: write # WHY: Required by deploy-pages for OIDC.
-
-env:
-  PYTHONUNBUFFERED: "1" # WHY: Real-time logging.
-  PYTHONIOENCODING: "utf-8" # WHY: Ensure UTF-8 encoding for international characters.
+  contents: read   # WHY: Needed to checkout code.
+  pages: write     # WHY: Required to deploy to GitHub Pages.
+  id-token: write  # WHY: Required by deploy-pages for OIDC authentication.
 
 concurrency:
-  # WHY: Only one Pages deployment at a time per branch.
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: github-pages
+  cancel-in-progress: false
+  # WHY: GitHub Pages is a shared deployment target.
+  # OBS: Do not cancel an in-progress Pages deployment with another deployment.
+
+env:
+  PYTHONUNBUFFERED: "1"     # WHY: Real-time log output in CI.
+  PYTHONIOENCODING: "utf-8" # WHY: Consistent encoding across platforms.
+  UV_FROZEN: "1"            # WHY: Deployment MUST use uv.lock without updating it.
 
 jobs:
   docs:
     name: Deploy Documentation site
     runs-on: ubuntu-latest
-    timeout-minutes: 30 # WHY: Prevent hanging jobs. If over, it is likely stuck.
-    env:
-      UV_PYTHON: "3.14" # WHY: Set Python version for all steps.
+    timeout-minutes: 30 # WHY: Fail fast if a step hangs unexpectedly.
 
     steps:
       # ============================================================
-      # ASSEMBLE: Get code and set up environment
+      # A) ASSEMBLE: Checkout code and set up environment
       # ============================================================
 
       - name: A1) Checkout repository code
-        # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+        # WHY: Required so all subsequent steps can access repo files.
 
       - name: A2) Configure GitHub Pages
-        # WHY: Sets Pages metadata for deployments.
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+        # WHY: Sets Pages metadata used by upload-pages-artifact and deploy-pages.
+        # OBS: Must run before the build step so base URL is available if needed.
 
-      - name: A3) Install uv (with caching and uv.lock awareness)
-        uses: astral-sh/setup-uv@v7
+      - name: A3) Install uv (with caching)
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          enable-cache: true # WHY: Speed up installs on subsequent runs
-          cache-dependency-glob: "uv.lock" # WHY: Only re-cache when dependencies change
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+          # WHY: Invalidate dependency cache when the committed lockfile changes.
 
-      - name: A4) Install Python 3.14 (no repo changes needed)
-        run: uv python install 3.14
+      - name: A4) Install project Python
+        run: uv python install
+        # WHY: Ensures the Python version declared in .python-version is available.
+        # OBS: uv manages the interpreter locally in the CI environment.
 
-      - name: A5) Sync to install all dependencies
-        run: uv sync --extra dev --extra docs --upgrade
+      - name: A5) Install dependencies from committed lockfile
+        run: uv sync --frozen
+        # WHY: Install all configured dependency groups exactly from uv.lock.
+        # REQ: Deployment MUST fail rather than update a stale lockfile.
 
       - name: A6) Show tool versions
         run: |
           uv --version
           uv run python --version
           if [ -f "zensical.toml" ]; then
-            uv run zensical --version
+            uv run python -m zensical --version
           fi
+        # WHY: Version output makes deployment logs easier to debug when tools change.
 
       # ============================================================
-      # === DEPLOY: Build and deploy ===
+      # D) DEPLOY: Build and publish docs
       # ============================================================
 
       - name: D1) Build docs with Zensical
@@ -79,12 +93,12 @@ jobs:
             echo "zensical.toml not found; refusing to deploy." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-          uv run zensical build
+          uv run python -m zensical build
+        # WHY: Hard-fail if zensical.toml is missing rather than deploying nothing.
+        # OBS: In CI (ci-python-zensical.yml) the missing config is a soft skip.
+        #      Here it is a hard failure because a deploy without docs is wrong.
 
       - name: D2) Verify site output exists
-        # WHY: Zensical should create a static site in the configured output directory
-        # (commonly "site/"). If the directory does not exist, the documentation
-        # build likely failed or the configuration is incorrect.
         run: |
           if [ ! -d "site" ]; then
             echo "## Documentation build output missing" >> "$GITHUB_STEP_SUMMARY"
@@ -92,16 +106,19 @@ jobs:
             echo "Check the Zensical build step and zensical.toml configuration." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+        # WHY: Catch a silent build failure before attempting to upload an empty artifact.
+        # OBS: Zensical outputs to site/ by default; update this path if zensical.toml
+        #      configures a different output directory.
 
       - name: D3) Upload Pages artifact
-        # WHY: GitHub Pages deployments require a packaged artifact containing
-        # the built static site. This step bundles the contents of the site/
-        # directory so the next step can publish it.
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
-          path: site # WHY: Default Zensical output directory for the built site.
+          path: site
+        # WHY: Packages the built static site for the deploy-pages action.
+        # OBS: path must match the output directory verified in D2.
 
       - name: D4) Deploy to GitHub Pages
-        # WHY: This step takes the uploaded artifact and publishes it to
-        # GitHub Pages so the documentation becomes publicly accessible.
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+        # WHY: Publishes the uploaded artifact to GitHub Pages.
+        # OBS: Requires pages: write and id-token: write permissions (set above).
+        # OBS: The deployed URL is shown in the Actions log after this step completes.

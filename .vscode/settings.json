@@ -1,12 +1,25 @@
-// .vscode/settings.json
+// ============================================================
+// .vscode/settings.json (ALL-PY-REPOS)
+// ============================================================
+// Updated: 2026-08-18
+//
+// Basis: cross-platform (all 3 OS), popular, reliable, and/or safe.
+// NOTE: Comments are not allowed in standard JSON files,
+//       but Microsoft allows them in their .vscode config files (JSONC).
+// Rule: a formatter is named for every common filetype (a few equal
+//       VS Code defaults) so the mapping is visible. Every formatter
+//       listed should have its extension recommended in extensions.json,
+//       or formatting silently does nothing on a clone.
+// Order: top-level editor settings, then [language] blocks A-Z, then
+//        other namespaced settings.
 {
+  // WHY: Avoid automatic file changes on save; format explicitly when intended.
   "editor.formatOnSave": false,
-  "python.analysis.typeCheckingMode": "basic",
-  "python.analysis.diagnosticSeverityOverrides": {
-    "reportMissingTypeStubs": "none"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
+  // WHY: Use explicit `uv run` commands instead of auto-activating an environment.
+  "python-envs.terminal.autoActivationType": "off",
+
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -15,20 +28,19 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    // 2026-04 changed to prettier for markdown files (e.g., README.md)
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "[yml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
-  "[github-actions-workflow]": {
+  "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
+
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": [
       ".github/workflows/*.yml",

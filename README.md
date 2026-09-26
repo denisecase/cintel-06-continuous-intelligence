@@ -2,7 +2,7 @@
 
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://denisecase.github.io/cintel-06-continuous-intelligence/)
 [![CI Status](https://github.com/denisecase/cintel-06-continuous-intelligence/actions/workflows/ci-python-zensical.yml/badge.svg?branch=main)](https://github.com/denisecase/cintel-06-continuous-intelligence/actions/workflows/ci-python-zensical.yml)
-[![Python 3.14+](https://img.shields.io/badge/python-3.14%2B-blue?logo=python)](#)
+[![Python 3.14](https://img.shields.io/badge/python-3.14%2B-blue?logo=python)](pyproject.toml)
 [![MIT](https://img.shields.io/badge/license-see%20LICENSE-yellow.svg)](./LICENSE)
 
 > Professional Python project for continuous intelligence.
@@ -78,10 +78,10 @@ You'll work with just these areas:
 Follow the [step-by-step workflow guide](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/) to complete:
 
 1. Phase 1. **Start & Run**
-2. Phase 2. **Change Authorship**
-3. Phase 3. **Read & Understand**
-4. Phase 4. **Modify**
-5. Phase 5. **Apply**
+2. Phase 2. **Read & Understand**
+3. Phase 3. **Take Ownership**
+4. Phase 4. **Make a Technical Modification**
+5. Phase 5. **Apply the Skills to a New Problem**
 
 ## Challenges
 
@@ -102,6 +102,9 @@ Pipeline executed successfully!
 
 And a new file named `project.log` will appear in the project folder.
 
+Once you see it, you're 90% of the way there.
+After that, you'll just make the project yours and get started exploring.
+
 ## Command Reference
 
 The commands below are used in the workflow guide above.
@@ -109,48 +112,99 @@ They are provided here for convenience.
 
 Follow the guide for the **full instructions**.
 
-<details>
-<summary>Show command reference</summary>
+### Get a Copy of the Project (Once)
 
-### In a machine terminal (open in your `Repos` folder)
-
-After you get a copy of this repo in your own GitHub account,
-open a machine terminal in your `Repos` folder:
+Open a **machine terminal** in your `Repos` folder.
+Copy and paste one command and hit Enter or Return afterwards to run it.
 
 ```shell
-# Replace username with YOUR GitHub username.
 git clone https://github.com/username/cintel-06-continuous-intelligence
 
 cd cintel-06-continuous-intelligence
 code .
 ```
 
-### In a VS Code terminal
+See the [workflow guide](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/) to learn more.
+
+### Initialize or Update the Python Environment
+
+With the project open in VS Code, open a VS Code terminal.
+Paste each command and hit Enter or Return after to run it.
 
 ```shell
+uvx pup-clean --delete
 uv self update
 uv python pin 3.14
-uv sync --extra dev --extra docs --upgrade
-
-uvx pre-commit install
-git add -A
-uvx pre-commit run --all-files
-# repeat if changes were made
-git add -A
-uvx pre-commit run --all-files
-
-uv run python -m cintel.continuous_intelligence_case
-
-uv run ruff format .
-uv run ruff check . --fix
-uv run zensical build
-
-git add -A
-git commit -m "update"
-git push -u origin main
+uv python install
+uv lock --upgrade
+uv sync
+uv audit
 ```
 
-</details>
+### Set Up and Run Git Hooks
+
+Set up and run the git hooks to perform
+some basic checks automatically before
+any changes get pushed to GitHub.
+
+In the VS Code terminal,
+paste each command and hit Enter or Return after to run it.
+
+```shell
+uv run prek install --force
+uv run prek update --freeze --cooldown-days 7
+
+git add -A
+uv run prek run --all-files
+# repeat if changes were made
+uv run prek run --all-files
+```
+
+### Run the Project as Python Module
+
+Run the project code as a Python module.
+
+```shell
+uv run python -m cintel.continuous_intelligence
+```
+
+### Run the Project as Reactive App
+
+Run the project app.py.
+
+```shell
+uv run marimo run app.py
+```
+
+In the terminal, you'll see "Running app.py".
+Click the URL: http://localhost:2718 to open your app.
+
+To stop, click in the VS Code terminal.
+Then hit **CTRL+c** (**CTRL** key and **c** key simultaneously).
+
+### Run Common Chores
+
+Run linters, formatters, type checks, tests, and
+build the documentation.
+
+```shell
+uv run ruff check . --fix
+uv run ruff format .
+
+uv run ty check
+uv run python -m pytest
+uv run python -m zensical build
+```
+
+### Git add-commit-push to GitHub
+
+After making useful changes, save your work to GitHub.
+
+```shell
+git add -A
+git commit -m "describe your changes in quotes"
+git push -u origin main
+```
 
 ## Notes
 
