@@ -101,3 +101,7 @@ This pattern is reusable across projects:
 - Dockerfile defines execution environment
 - GitHub Actions provides remote execution
 - No local Docker installation is required (nice for Windows users)
+
+---
+
+[◄ Back to 🏠 Home](index.md)

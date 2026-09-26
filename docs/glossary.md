@@ -61,3 +61,7 @@ Examples include:
 - rolling back a deployment
 
 Continuous intelligence systems support operational decisions by providing timely information about system behavior.
+
+---
+
+[◄ Back to 🏠 Home](index.md)
