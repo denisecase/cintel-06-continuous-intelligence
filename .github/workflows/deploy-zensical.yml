@@ -1,28 +1,53 @@
 # ============================================================
 # .github/workflows/deploy-zensical.yml (ALL-PY-REPOS)
 # ============================================================
-# Updated: 2026-08-18
+# Updated: 2026-10-11
 #
-# WHY: Build and deploy documentation to GitHub Pages on pushes to main.
-# REQ: Repo Settings -> Pages -> Build and deployment -> Source:
-#      GitHub Actions
-# WHY: Without this setting, the deploy-pages action will fail with a 403.
-# REQ: Repository MUST contain .python-version.
-# WHY: The repository declares the Python version used locally and by CI.
+# WHAT: A GitHub Actions workflow that automatically publishes project documentation.
+#       GitHub Actions is GitHub's built-in project automation service.
+#       This YAML file tells GitHub what commands to run and when to run them.
+#
+# WHEN: Use for projects that use Python tooling and Zensical to publish a
+#       professional documentation website describing the project,
+#       its data, methods, processes, and results.
+#       Projects do not need a src/ Python application.
+#
+# TRIGGER: Runs automatically when changes are pushed to the main branch.
+#          It can also be started manually from the GitHub Actions tab.
+#
+# WHY: Publishing documentation makes project work accessible to others.
+#      Automated deployment keeps the public website current without
+#      requiring the developer to rebuild and upload it manually.
+#
+# CI/CD: Continuous Integration (CI) automatically checks changes.
+#        Continuous Delivery/Deployment (CD) prepares or publishes work.
+#        This workflow performs CD by building and publishing the website.
+#        A separate workflow handles CI.
+#
+# SKILLS: Git, GitHub, GitHub Actions, CI/CD, automated deployment,
+#         project automation, and professional documentation.
+#
+# TOOLS: Zensical builds the documentation website.
+#        GitHub Pages hosts the published website.
+#
+# REQ: Repository MUST contain .python-version, uv.lock, and zensical.toml.
+# REQ: Repository Settings > Pages > Build and deployment > Source:
+#      GitHub Actions.
 # REQ: Deployment MUST use the committed uv.lock without updating it.
+# ============================================================
 
 # Name shown in the repo Actions tab.
 name: Docs Deploy (Zensical)
 
 on:
   push:
-    branches: [main]  # WHY: Deploy docs on every push to GitHub branch `main`.
-  workflow_dispatch:  # WHY: Allow manual trigger from Actions tab.
+    branches: [main] # WHY: Deploy docs on every push to GitHub branch `main`.
+  workflow_dispatch: # WHY: Allow manual trigger from Actions tab.
 
 permissions:
-  contents: read   # WHY: Needed to checkout code.
-  pages: write     # WHY: Required to deploy to GitHub Pages.
-  id-token: write  # WHY: Required by deploy-pages for OIDC authentication.
+  contents: read # WHY: Needed to checkout code.
+  pages: write # WHY: Required to deploy to GitHub Pages.
+  id-token: write # WHY: Required by deploy-pages for OIDC authentication.
 
 concurrency:
   group: github-pages
@@ -31,9 +56,9 @@ concurrency:
   # OBS: Do not cancel an in-progress Pages deployment with another deployment.
 
 env:
-  PYTHONUNBUFFERED: "1"     # WHY: Real-time log output in CI.
+  PYTHONUNBUFFERED: "1" # WHY: Real-time log output in CI.
   PYTHONIOENCODING: "utf-8" # WHY: Consistent encoding across platforms.
-  UV_FROZEN: "1"            # WHY: Deployment MUST use uv.lock without updating it.
+  UV_FROZEN: "1" # WHY: Deployment MUST use uv.lock without updating it.
 
 jobs:
   docs:
@@ -50,14 +75,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-        # WHY: Required so all subsequent steps can access repo files.
+          # WHY: Required so all subsequent steps can access repo files.
 
       - name: A2) Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
         # WHY: Sets Pages metadata used by upload-pages-artifact and deploy-pages.
         # OBS: Must run before the build step so base URL is available if needed.
 
-      - name: A3) Install uv (with caching)
+      - name: A3) Install uv (with caching and uv.lock awareness)
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           enable-cache: true
@@ -71,8 +96,7 @@ jobs:
 
       - name: A5) Install dependencies from committed lockfile
         run: uv sync --frozen
-        # WHY: Install all configured dependency groups exactly from uv.lock.
-        # REQ: Deployment MUST fail rather than update a stale lockfile.
+        # WHY: Install dependencies from the committed uv.lock without updating it.
 
       - name: A6) Show tool versions
         run: |
@@ -86,7 +110,6 @@ jobs:
       # ============================================================
       # D) DEPLOY: Build and publish docs
       # ============================================================
-
       - name: D1) Build docs with Zensical
         run: |
           if [ ! -f "zensical.toml" ]; then

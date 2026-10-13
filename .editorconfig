@@ -1,17 +1,54 @@
 # ============================================================
 # .editorconfig (ALL-REPOS)
 # ============================================================
-# Updated: 2026-09-25
+# Updated: 2026-10-11
 #
-# REQ: All professional GitHub project repositories MUST include .editorconfig.
-# WHY: Establish a cross-editor baseline so diffs stay clean and formatting
-# is consistent across editors and IDEs.
-# ALT: Repository may omit .editorconfig ONLY if formatting is enforced
-# equivalently by CI and formatter tooling.
-# CUSTOM: Adjust indent_size defaults only if organizational standards change;
-# keep stable across projects.
-# EditorConfig: https://editorconfig.org
+# WHAT: A configuration file that defines shared text-formatting conventions.
+#       EditorConfig helps different code editors and IDEs use consistent
+#       indentation, character encoding, line endings, and whitespace rules.
+#       The same conventions can be used on Windows, macOS, and Linux.
+#
+# WHEN: Use in professional projects where files may be edited by different
+#       people, using different editors or operating systems.
+#
+# WHY: Consistent formatting makes project files easier to read, review,
+#      compare, and maintain. Without shared conventions, editors may
+#      introduce unnecessary formatting differences when files are saved.
+#      These changes create distracting Git diffs, complicate code reviews,
+#      and can occasionally cause problems with development tools.
+#
+# HOW: Editors that support EditorConfig read this file and apply its
+#      settings when working with matching file types.
+#      General defaults apply to all files unless more specific rules
+#      are defined for a particular file or programming language.
+#
+# SKILLS: EditorConfig, code formatting, cross-platform development,
+#         configuration management, Git, and team collaboration.
+#
+# TOOLS: EditorConfig-compatible editors use these formatting conventions.
+#        Git tracks changes to the resulting files.
+#        Linters and formatters can independently verify formatting rules.
+#
+# REQ: All professional GitHub project repositories SHOULD include .editorconfig.
+# REQ: The file name MUST be exactly .editorconfig.
+# ALT: Repositories may omit this file when equivalent formatting standards
+#      are enforced through other established tools.
+#
+# OBS: EditorConfig does not execute code or install software.
+#      Editors must support EditorConfig for these settings to take effect.
+#
+# OBS: .editorconfig and .gitattributes serve complementary purposes.
+#      .editorconfig establishes editor formatting conventions.
+#      .gitattributes establishes Git's rules for handling tracked files.
+#      Neither replaces the other.
+#
+# CUSTOM: Adjust shared formatting conventions only when project or
+#         organizational standards require different settings.
+#
+# SEE: https://editorconfig.org/
+# ============================================================
 
+# WHY: Keep this project's formatting rules independent of parent directories.
 root = true
 
 
@@ -123,7 +160,8 @@ indent_style = space
 # === Programming languages and scripts ===
 
 [*.{bat,cmd}]
-# WHY: Windows batch and command scripts use a simple 2-space shared baseline.
+# WHY: Windows batch scripts use CRLF line endings.
+end_of_line = crlf
 indent_size = 2
 indent_style = space
 

@@ -1,0 +1,64 @@
+# ============================================================
+# .pytest.toml (ALL-PY-SRC-REPOS)
+# ============================================================
+# Updated: 2026-10-11
+#
+# WHAT: A TOML configuration file for pytest, a Python testing framework.
+#       pytest discovers and executes automated tests to verify code behavior.
+#
+# WHEN: Use in Python projects with source code under src/ and automated tests.
+#       pytest reads this file automatically when running tests.
+#
+# WHY: Maintain consistent test discovery, coverage reporting,
+#      and validation settings across professional Python projects.
+#
+# HOW: Open a terminal in the repository root and run:
+#
+#      uv run pytest
+#
+# TOOLS: pytest discovers and executes Python tests.
+#        pytest-cov measures how much project code is exercised by tests.
+#
+# SKILLS: Automated testing, test discovery, code coverage,
+#         Python validation, and configuration management.
+#
+# REQ: Python projects using this configuration require pytest 9 or later.
+#
+# OBS: Coverage reports identify tested and untested lines of source code.
+# OBS: Tests fail when measured coverage is below the configured threshold.
+#
+# CUSTOM: Adjust the coverage threshold to meet project requirements.
+# ============================================================
+
+[pytest]
+
+# === TEST DISCOVERY ===
+
+# WHY: Require pytest 9 or later for native TOML configuration.
+minversion = "9.0"
+
+# WHY: Discover automated tests in the tests/ directory.
+testpaths = ["tests"]
+
+# WHY: Allow tests to import Python modules directly from src/.
+# OBS: Supports both Python packages and standalone modules such as app_core.py.
+# OBS: Does not require the project to be installed as a Python package.
+pythonpath = ["src"]
+
+
+# === TEST EXECUTION AND COVERAGE ===
+
+addopts = [
+    "--cov=src",                 # WHY: Measure coverage of Python source code.
+    "--cov-fail-under=20",       # WHY: Establish a minimum coverage threshold.
+    "--cov-report=term-missing", # WHY: Report lines not exercised by tests.
+]
+
+
+# === WARNING FILTERS ===
+
+filterwarnings = [
+    # WHY: Suppress the expected warning when Matplotlib uses
+    #      a non-interactive backend during automated testing.
+    "ignore:FigureCanvasAgg is non-interactive, and thus cannot be shown:UserWarning",
+]

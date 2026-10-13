@@ -1,15 +1,47 @@
 # ============================================================
 # .github/.yamllint.yml (ALL-REPOS)
 # ============================================================
-# Updated: 2026-09-25
+# Updated: 2026-10-11
 #
-# REQ: All repositories with YAML SHOULD lint YAML files
-# to keep them clean and consistent.
-# WHY: Detect malformed YAML, duplicate keys, indentation errors, trailing
-# whitespace, and other structural problems before they reach CI/CD tooling.
-# ALT: Style-only rules that create noise without improving correctness are
-# intentionally relaxed for GitHub Actions and shared project configuration.
-# yamllint: https://yamllint.readthedocs.io/
+# WHAT: A configuration file for checking YAML files.
+#       YAML is a human-readable data format commonly used for configuration.
+#       GitHub Actions workflows and many development tools use YAML.
+#       This file tells yamllint which rules to apply when checking YAML files.
+#
+# WHEN: Use in repositories containing YAML configuration files,
+#       particularly those that use GitHub Actions for project automation.
+#
+# TRIGGER: yamllint runs when invoked locally, through Git hooks, or by CI.
+#          This file defines the rules but does not run checks itself.
+#
+# WHY: Configuration errors can prevent automated workflows from running.
+#      Incorrect indentation, duplicate keys, and invalid YAML syntax
+#      can cause failures that are difficult to diagnose.
+#      Automated linting helps identify problems early and maintain
+#      consistent, readable configuration across professional projects.
+#
+# CI/CD: Continuous Integration (CI) can check YAML files before changes
+#        are accepted. This helps prevent configuration errors from
+#        disrupting automated checks and deployments.
+#
+# SKILLS: YAML, configuration management, linting, automated validation,
+#         GitHub Actions, CI/CD, and project quality.
+#
+# TOOLS: yamllint checks YAML syntax and formatting.
+#        prek can run yamllint through Git hooks.
+#        GitHub Actions can run these checks automatically.
+#
+# REQ: Repositories with YAML SHOULD validate their YAML files.
+# REQ: Linting rules SHOULD identify errors without introducing
+#      unnecessary style requirements.
+#
+# OBS: Some default style rules are relaxed to accommodate GitHub Actions,
+#      URLs, workflow expressions, and shared configuration files.
+# OBS: This file does not replace validation of GitHub Actions workflow
+#      semantics or tool-specific configuration requirements.
+#
+# SEE: https://yamllint.readthedocs.io/
+# ============================================================
 
 extends: default
 

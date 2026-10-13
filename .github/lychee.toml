@@ -1,20 +1,49 @@
 # ============================================================
 # .github/lychee.toml (ALL-REPOS)
 # ============================================================
-# Updated: 2026-09-25
+# Updated: 2026-10-11
+#
+# WHAT: A configuration file for automated link checking.
+#       Lychee checks links in project documentation and other files.
+#       TOML is a human-readable data format commonly used for configuration.
+#       This file tells Lychee how to check links and handle exceptions.
+#
+# WHEN: Use in repositories that contain links to websites, documentation,
+#       source code, datasets, references, or other resources.
+#
+# TRIGGER: The links.yml GitHub Actions workflow runs Lychee automatically
+#          for pull requests, monthly, or when started manually.
+#          Lychee reads this file to determine how to check links.
+#
+# WHY: Professional documentation should provide reliable access to
+#      supporting information and resources. Websites move, URLs change,
+#      and pages become unavailable over time.
+#      Automated link checking helps identify broken references before
+#      they interfere with understanding, reproducing, or extending work.
+#
+# CI/CD: Automated link checking supports Continuous Integration (CI)
+#        by verifying references as part of project quality checks.
+#        This configuration does not modify files or deploy the project.
+#
+# SKILLS: TOML, link validation, GitHub Actions, CI/CD,
+#         automated quality checks, and documentation maintenance.
+#
+# TOOLS: Lychee checks links and reports potential problems.
+#        GitHub Actions runs the checks automatically.
+#        This file configures how Lychee performs those checks.
 #
 # REQ: Repositories with documentation SHOULD check links automatically.
-# WHY: Broken links reduce the reliability and reproducibility of documentation,
-# references, instructions, and external resources.
-# REQ: Link checking MUST be reliable and CI-safe.
-# WHY: Configuration should detect genuinely broken links while minimizing
-# false failures caused by rate limiting, authentication, and anti-bot services.
-# OBS: Lychee configuration uses a flat structure for these options.
-# OBS: Repository-specific path exclusions should be added only when needed.
-# CUSTOM: Add exclusions only for links or paths that are known to be unsuitable
-# for automated checking.
+# REQ: Link checking MUST be reliable and suitable for CI.
 #
-# Lychee: https://lychee.cli.rs/
+# OBS: Some websites block automated requests or limit request frequency.
+#      Timeouts, retries, and exclusions help reduce false failures.
+#      Accepted 403 and 429 responses do not confirm that links work.
+#
+# CUSTOM: Add exclusions only for links or paths known to be unsuitable
+#         for automated checking.
+#
+# SEE: https://lychee.cli.rs/
+# ============================================================
 
 # === Output ===
 

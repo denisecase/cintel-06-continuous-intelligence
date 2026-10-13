@@ -1,18 +1,35 @@
 # ============================================================
 # .github/workflows/links.yml (ALL-REPOS)
 # ============================================================
-# Updated: 2026-09-25
+# Updated: 2026-10-11
 #
-# REQ: Repositories SHOULD verify links in project documentation and workflow files.
-# WHY: This workflow checks links throughout the repository and verifies that
-# referenced web pages and resources are still reachable.
-# WHY: Broken or outdated links make instructions, references, documentation,
-# and project resources harder to use and reproduce.
-# OBS: Lychee performs the link checks using the rules in .github/lychee.toml.
-# OBS: Runs for pull requests, monthly on schedule, and whenever started manually.
-# ALT: Link-checking behavior may be adjusted in .github/lychee.toml when external
-# sites require special handling for redirects, rate limits, or automated requests.
+# WHAT: A GitHub Actions workflow that automatically checks project links.
+#       GitHub Actions is GitHub's built-in project automation service.
+#       This YAML file tells GitHub what commands to run and when to run them.
+#
+# WHEN: Use in all repositories to check links in documentation and project files.
+#
+# TRIGGER: Runs automatically for pull requests and monthly to check for
+#          broken links. It can also be started manually or by another workflow.
+#
+# WHY: Links may become broken when websites move, pages are deleted, or
+#      file paths change. Automated checks help keep project documentation
+#      accurate, reliable, and useful to readers.
+#
+# CI/CD: Link checking is a form of Continuous Integration (CI).
+#        This workflow checks links but does not modify or publish files.
+#
+# SKILLS: GitHub, GitHub Actions, CI/CD, automated link checking,
+#         project automation, and documentation quality.
+#
+# TOOL: Lychee checks whether links can be reached.
+#       Configuration lives in .github/lychee.toml.
+#
+# REQ: Repository MUST contain .github/lychee.toml.
+# REQ: This workflow MUST check links without modifying repository files.
+# ============================================================
 
+# Name shown in the repository Actions tab.
 name: Check Links
 
 on:

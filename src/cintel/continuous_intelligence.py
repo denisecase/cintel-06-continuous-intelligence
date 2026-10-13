@@ -1,8 +1,7 @@
-"""
-continuous_intelligence_case.py - Project script (example).
+"""continuous_intelligence.py - Project script (example).
 
-Author: Denise Case
-Date: 2026-03
+Author: Your Name Here
+Date: 2026-mm-dd
 
 System Metrics Data
 
@@ -33,17 +32,31 @@ Questions to Consider
 
 Paths (relative to repo root)
 
-    INPUT FILE: data/system_metrics_case.csv
-    OUTPUT FILE: artifacts/system_assessment_case.csv
+    INPUT FILE: data/system_metrics.csv
+    OUTPUT FILE: artifacts/system_assessment.csv
 
 Terminal command to run this file from the root project folder
 
-    uv run python -m cintel.continuous_intelligence_case
+    uv run python -m cintel.continuous_intelligence
 
-OBS:
-  Don't edit this file - it should remain a working example.
-  Use as much of this code as you can when creating your own pipeline script,
-  and change the logic to match the needs of your project.
+DESIGN:
+
+Use this file to first learn and then apply your skills.
+
+Reusable functions that do the work are kept in a utils file.
+We import functions and pass in what they need through their parentheses.
+Shared utility functions can be imported into a Python
+module or a reactive marimo notebook app.
+
+Reusable visualization functions may come from sources such as eda-vizkit.
+
+SKILLS:
+
+- Reading CSV files into Polars DataFrames.
+- Defining and using constants for thresholds.
+- Logging for debugging and transparency.
+- Designing signals based on domain-specific rules.
+- Detecting anomalies in system metrics.
 """
 
 # === DECLARE IMPORTS ===
@@ -55,6 +68,8 @@ from typing import Final
 from datafun_toolkit.logger import get_logger, log_header, log_path
 import polars as pl
 
+from cintel.utils_system import compute_signals, load_system_metrics
+
 # === CONFIGURE LOGGER ===
 
 LOG: logging.Logger = get_logger("P6", level="DEBUG")
@@ -65,8 +80,8 @@ ROOT_DIR: Final[Path] = Path.cwd()
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 ARTIFACTS_DIR: Final[Path] = ROOT_DIR / "artifacts"
 
-DATA_FILE: Final[Path] = DATA_DIR / "system_metrics_case.csv"
-OUTPUT_FILE: Final[Path] = ARTIFACTS_DIR / "system_assessment_case.csv"
+DATA_FILE: Final[Path] = DATA_DIR / "system_metrics.csv"
+OUTPUT_FILE: Final[Path] = ARTIFACTS_DIR / "system_assessment.csv"
 
 # === DEFINE THRESHOLDS ===
 
@@ -102,7 +117,8 @@ def main() -> None:
     # ----------------------------------------------------
     # STEP 1: READ SYSTEM METRICS
     # ----------------------------------------------------
-    df = pl.read_csv(DATA_FILE)
+    # load_system_metrics() wraps polars' read_csv() — see utils_system.py.
+    df: pl.DataFrame = load_system_metrics(DATA_FILE)
 
     LOG.info(f"STEP 1. Loaded {df.height} system records")
 
@@ -110,22 +126,23 @@ def main() -> None:
     # STEP 2: DESIGN SIGNALS
     # ----------------------------------------------------
     # This step connects to Module 3: Signal Design.
-    # Create useful signals derived from raw system metrics.
+    # compute_signals() adds error_rate, avg_latency_ms, and throughput —
+    # the same function cintel-03's signal_design.py uses, unchanged. See
+    # utils_system.py for exactly how each signal is built.
 
     LOG.info("STEP 2. Designing signals from raw metrics...")
 
-    df = df.with_columns(
-        [
-            (pl.col("errors") / pl.col("requests")).alias("error_rate"),
-            (pl.col("total_latency_ms") / pl.col("requests")).alias("avg_latency_ms"),
-        ]
-    )
+    df = compute_signals(df)
 
     # ----------------------------------------------------
     # STEP 3: DETECT ANOMALIES
     # ----------------------------------------------------
     # This step connects to Module 2: Anomaly Detection.
     # Check whether signal values exceed reasonable thresholds.
+    #
+    # This filter is written inline rather than pulled from a utils file —
+    # it's specific to combining error_rate and avg_latency_ms for this
+    # project, unlike compute_signals() above, which is reused as-is.
 
     LOG.info("STEP 3. Checking for anomalies in system signals...")
 

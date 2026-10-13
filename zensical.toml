@@ -1,12 +1,55 @@
 # ============================================================
-# zensical.toml (ALL-PY-SRC-REPOS)
+# zensical.toml (ALL-PY-REPOS)
 # ============================================================
-# Updated: 2026-08-26
+# Updated: 2026-10-11
 #
-# REQ: Python src/ repositories SHOULD provide documentation configuration.
-# NEED: plugins.mkdocstrings for src/ api generation.
-# pyproject.toml docs needs zensical and mkdocstrings[python].
-# WHY: Centralizes project documentation configuration.
+# WHAT: A configuration file for building a professional project website.
+#       Zensical converts Markdown documentation into a navigable website.
+#       TOML is a human-readable data format commonly used for configuration.
+#       This file tells Zensical how to organize and present the website.
+#
+# WHEN: Use for projects that need a professional documentation website.
+#       Supports projects with or without a src/ Python application.
+#
+# WHY: Professional work must be communicated, not just completed.
+#      Documentation helps others understand the project's purpose,
+#      data, methods, processes, results, and conclusions.
+#      It makes the work easier to evaluate, reproduce, maintain, and reuse.
+#      A published website makes the work accessible beyond the developer's
+#      computer and provides a professional way to share accomplishments.
+#
+# HOW: Write documentation in Markdown files under docs/.
+#      Zensical builds these files into a website under site/.
+#      GitHub Actions can automatically publish the website to GitHub Pages.
+#      The documentation stays associated with the project repository.
+#
+# CI/CD: Continuous Integration (CI) can verify that documentation builds.
+#        Continuous Deployment (CD) can publish the website automatically.
+#        This file configures Zensical; separate workflows handle CI/CD.
+#
+# SKILLS: Technical writing, project documentation, Markdown, TOML,
+#         Zensical, GitHub Pages, CI/CD, and professional communication.
+#
+# TOOLS: Markdown provides the documentation content.
+#        Zensical generates the website.
+#        GitHub Pages hosts the published website.
+#
+# REQ: pyproject.toml docs dependency group SHOULD include
+#      zensical and mkdocstrings[python].
+# OBS: API documentation is generated only when requested in Markdown.
+#
+# LOCAL TESTING: Build the documentation website to check for errors.
+#
+#   uv run python -m zensical build
+#
+# LOCAL PREVIEW: Start a local web server to see the documentation in a browser.
+#                Zensical automatically refreshes the site as files change.
+#
+#   uv run python -m zensical serve --open
+#
+# OBS: The preview runs at http://localhost:8000.
+#      Press Ctrl+C in the terminal to stop the server.
+# ============================================================
 
 [project]
 site_name = "Docs" # CUSTOM: Set the name that appears in the browser tab.
@@ -17,10 +60,6 @@ site_description = "Project Documentation" # CUSTOM: Set the description.
 docs_dir = "docs" # source directory for documentation markdown files
 site_dir = "site" # output directory for generated site (ignored by Git; not in repo)
 edit_uri = "edit/main/docs/" # "Edit this page" links (GitHub)
-extra_javascript = [
-    "javascripts/read-aloud.js", # CUSTOM: adds optional Read Aloud functionality to pages.
-    "javascripts/concept-quiz.js", # CUSTOM: adds optional Concept Quiz functionality to pages.
-]
 
 
 [project.extra]
@@ -34,9 +73,9 @@ admonition = {} # WHY: Allows shaded blocks
 md_in_html = {} # WHY: Allow Markdown inside HTML blocks when the opening tag includes `markdown`, e.g. <details markdown>...</details>
 pymdownx.superfences = {} # WHY: Enables support for fenced code blocks with syntax highlighting and custom options.
 
-# ------------------------------------------------------------
-# Plugins
-# ------------------------------------------------------------
+# ============================================================
+# === Plugins ===
+# ============================================================
 
 [project.plugins.mkdocstrings.handlers.python]
 paths = ["src"] # WHY: MkDocstrings auto-generates documentation from code; this points it to the source code directory.
@@ -56,21 +95,29 @@ lang = "en" # WHY: Search plugin provides instant search functionality for docum
 [project.theme]
 # SEE: https://zensical.org/docs/setup/navigation/#instant-navigation-zensicaltoml
 features = [
-    "navigation.tracking", # WHY: Track documentation navigation behavior.
     "navigation.expand", # WHY: Expandable navigation helps users focus on relevant sections.
+    "navigation.indexes", # WHY: Indexes provide an overview of documentation structure.
     "navigation.path", # WHY: Path navigation helps users understand location.
     "navigation.prune", # WHY: Pruning simplifies navigation.
-    "navigation.indexes", # WHY: Indexes provide an overview of documentation structure.
+    "navigation.top", # WHY: Add a back-to-top button.
+    "navigation.tracking", # WHY: Track documentation navigation behavior.
     "toc.follow", # WHY: Keep table of contents in sync with the current page.
     "toc.integrate", # WHY: Integrate table of contents into navigation.
-    "navigation.top", # WHY: Add a back-to-top button.
 ]
 
-# ------------------------------------------------------------
-# Navigation
-# ------------------------------------------------------------
-# If no explicit navigation is provided,
-# then folder-based navigation will be used automatically.
+# ============================================================
+# === Navigation ===
+# ============================================================
+# Zensical automatically creates the website navigation menu from the
+# folders and Markdown files in docs/.
+# No separate menu configuration is needed.
+#
+# For example:
+#   docs/index.md       - Main project write-up (methods, results, conclusions)
+#   docs/data-card.md   - Google data card describing the dataset
+#   docs/api.md         - API reference generated from Python docstrings
+#
+# Add or organize Markdown files in docs/ to update the website navigation.
 
 nav = [
     { "Home" = "index.md" },

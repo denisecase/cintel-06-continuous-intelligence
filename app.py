@@ -11,9 +11,8 @@ RUN LOCALLY:
 WASM DEPENDENCIES:
 
 Under WebAssembly (emscripten) the browser has no project environment.
-This app uses only marimo, which is already present in the marimo WASM
-runtime. If a later version adds third-party packages, the first cell
-installs them with micropip when running under WASM.
+This app uses polars in addition to marimo, so the first cell installs
+polars with micropip when running under WASM.
 
 NO LOGGING:
 
@@ -22,43 +21,19 @@ so this notebook configures no logging.
 
 PLAN CELLS FIRST
 
-1. Imports (returns shared imports and constants)
+1. Imports (installs WASM deps, returns shared imports and constants)
 2. Opening title and introduction (Markdown)
-3. Closing (Markdown)
+3. Load system metrics and design signals (same cell handles local and
+   WASM environments, via cintel.utils_system)
+4. Threshold controls (sliders)
+5. Detect anomalies and summarize system state (same logic as the CLI
+   pipeline)
+6. Show the results (state label + summary + anomalies table)
+7. Closing (Markdown)
 
 Note: marimo triggers @app.cell functions automatically; we never call them.
 The names starting with "_" are for our own organization; the engine ignores
 them.
-
-HOW MARIMO NOTEBOOKS WORK
-
-Each cell is a FUNCTION.
-The return value of one cell can be passed as an argument to another cell.
-We never call the functions, so they don't need names other than `_` (underscore).
-(You can give them names if you want, but the notebook engine ignores them.)
-
-The notebook is REACTIVE: when a cell's code or inputs change,
-the notebook engine reruns that cell and every cell that depends on it.
-
-The notebook is always CONSISTENT with outputs reflecting current inputs.
-
-The first cell imports all dependencies, so the notebook is SELF-CONTAINED.
-
-All later cells include their dependencies in their argument list.
-Some other cells return values that can be used in other cells.
-A cell displays the value of its last expression.
-
-A cell whose last line is an assignment or a bare return
-(like data and view cells) displays nothing;
-only markdown, control, and render cells are meant to show.
-
-RULE: Each variable must be defined in exactly one cell.
-Defining the same name in two cells is a marimo error.
-
-INPUT WIDGETS/CONTROLS: A cell that builds an input widget
-resets that widget to its default every time the cell reruns.
-marimo reruns a cell whenever any argument in its signature changes.
-So a widget-building cell must depend only on what genuinely determines its options.
 """
 
 # === ONLY THIS AT THE TOP OF THE FILE ===
@@ -66,40 +41,152 @@ So a widget-building cell must depend only on what genuinely determines its opti
 import marimo
 
 __generated_with = "0.25.0"
+
 app = marimo.App(width="medium")
 
 # === FIRST CELL IMPORTS AND RETURNS DEPENDENCIES TO MAKE IT SELF-CONTAINED ===
 
 
 @app.cell
-def _():
+async def _():
+    import sys
+
+    if sys.platform == "emscripten":
+        import micropip
+
+        await micropip.install("polars")
+
     import marimo as mo
+    import polars as pl
 
-    return (mo,)
+    from cintel.utils_system import compute_signals, load_system_metrics
+
+    return compute_signals, load_system_metrics, mo, pl, sys
 
 
-# ===  TYPICALLY START WITH A MARKDOWN TITLE AND OPENING ===
+# === TITLE AND INTRODUCTION ===
 
 
 @app.cell
 def _(mo):
     mo.md(r"""
-    # I Can Build Web Apps with Marimo!
+    # Continuous Intelligence
 
-    Add your special message here:
+    Brings together signal design (Module 3) and anomaly detection
+    (Module 2) to assess the overall state of a system:
+    **STABLE** or **DEGRADED**.
+
+    Move the sliders below to change what counts as degraded.
     """)
 
 
-# ===  TYPICALLY END WITH A MARKDOWN SOURCE LINK AND CLOSING ===
+# === LOAD SYSTEM METRICS AND DESIGN SIGNALS ===
+
+
+@app.cell
+def _(compute_signals, load_system_metrics, mo, sys):
+    """Load system metrics and design signals. Two environments, one cell.
+
+    Locally, polars reads the CSV from data/.
+    Under WASM (emscripten), Pyodide's open_url() fetches the CSV from
+    public/ and load_system_metrics() reads it from there instead.
+    """
+    notebook_location = mo.notebook_location()
+
+    if notebook_location is None:
+        raise RuntimeError("Unable to determine notebook location.")
+
+    filename = "system_metrics.csv"
+
+    if sys.platform == "emscripten":
+        from pyodide.http import open_url  # ty: ignore[unresolved-import]
+
+        data_url = notebook_location / "public" / filename
+        df = load_system_metrics(open_url(str(data_url)))
+    else:
+        data_path = notebook_location.parents[1] / "data" / filename
+        df = load_system_metrics(data_path)
+
+    df = compute_signals(df)
+    return (df,)
+
+
+# === THRESHOLD CONTROLS ===
+
+
+@app.cell
+def _(mo):
+    max_error_rate = mo.ui.slider(
+        0.0, 0.5, value=0.05, step=0.01, label="Max error rate"
+    )
+    max_avg_latency = mo.ui.slider(0, 200, value=40, label="Max avg latency (ms)")
+    mo.hstack([max_error_rate, max_avg_latency])
+    return max_avg_latency, max_error_rate
+
+
+# === DETECT ANOMALIES AND SUMMARIZE SYSTEM STATE (SAME LOGIC AS THE CLI PIPELINE) ===
+
+
+@app.cell
+def _(df, max_avg_latency, max_error_rate, pl):
+    anomalies_df = df.filter(
+        (pl.col("error_rate") > max_error_rate.value)
+        | (pl.col("avg_latency_ms") > max_avg_latency.value)
+    )
+
+    summary_df = df.select(
+        [
+            pl.col("requests").mean().alias("avg_requests"),
+            pl.col("errors").mean().alias("avg_errors"),
+            pl.col("error_rate").mean().alias("avg_error_rate"),
+            pl.col("avg_latency_ms").mean().alias("avg_latency_ms"),
+        ]
+    )
+
+    summary_df = summary_df.with_columns(
+        pl.when(
+            (pl.col("avg_error_rate") > max_error_rate.value)
+            | (pl.col("avg_latency_ms") > max_avg_latency.value)
+        )
+        .then(pl.lit("DEGRADED"))
+        .otherwise(pl.lit("STABLE"))
+        .alias("system_state")
+    )
+    return anomalies_df, summary_df
+
+
+# === SHOW THE RESULTS ===
+
+
+@app.cell
+def _(mo, summary_df):
+    state = summary_df.to_dicts()[0]["system_state"]
+    mo.md(f"## System state: **{state}**")
+
+
+@app.cell
+def _(mo, summary_df):
+    mo.ui.table(summary_df)
+
+
+@app.cell
+def _(anomalies_df, mo):
+    mo.md(f"**{anomalies_df.height} anomalous observations** at these thresholds.")
+
+
+@app.cell
+def _(anomalies_df, mo):
+    mo.ui.table(anomalies_df)
+
+
+# === TYPICALLY END WITH A MARKDOWN SOURCE LINK AND CLOSING ===
 
 
 @app.cell
 def _(mo):
     mo.md(r"""
     ---
-
     [😊 Learn more at marimo.io](https://marimo.io/)
-
     ---
 
     **Running locally?**
@@ -107,7 +194,6 @@ def _(mo):
     then press **CTRL** and **c** together (CTRL+c).
     When it asks "Are you sure you want to quit? (y/N)",
     type **y** and press **Enter**.
-
     ---
     """)
 

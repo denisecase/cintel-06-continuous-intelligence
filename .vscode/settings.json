@@ -1,22 +1,36 @@
 // ============================================================
-// .vscode/settings.json (ALL-PY-REPOS)
+// .vscode/settings.json (ALL-REPOS)
 // ============================================================
-// Updated: 2026-08-18
+// Updated: 2026-10-11
 //
-// Basis: cross-platform (all 3 OS), popular, reliable, and/or safe.
-// NOTE: Comments are not allowed in standard JSON files,
-//       but Microsoft allows them in their .vscode config files (JSONC).
-// Rule: a formatter is named for every common filetype (a few equal
-//       VS Code defaults) so the mapping is visible. Every formatter
-//       listed should have its extension recommended in extensions.json,
-//       or formatting silently does nothing on a clone.
-// Order: top-level editor settings, then [language] blocks A-Z, then
-//        other namespaced settings.
+// WHAT: A configuration file for project-specific VS Code editor settings.
+//       JSONC is JSON with comments, supported by VS Code configuration files.
+//       This file identifies preferred formatters for common file types.
+//
+// WHEN: Use in professional projects to share consistent editor conventions
+//       without requiring contributors to configure everything individually.
+//
+// WHY: Consistent formatting makes project files easier to read and maintain.
+//      Shared settings help contributors use appropriate formatting tools
+//      while avoiding unnecessary changes to their development environments.
+//
+// HOW: VS Code reads these settings when the project folder is opened.
+//      Formatting is not automatically triggered when files are saved.
+//      Users can explicitly request formatting when needed.
+//
+// SKILLS: VS Code, workspace settings, code formatting, JSONC,
+//         project configuration, and team collaboration.
+//
+// REQ: Shared settings MUST NOT modify Python environments, terminals,
+//      execution commands, or other unrelated development behavior.
+//
+// OBS: External formatters should be recommended in extensions.json.
+//      VS Code's built-in JSON and JSONC formatters need no installation.
+// OBS: Language-specific formatter settings are listed alphabetically.
+// ============================================================
 {
   // WHY: Avoid automatic file changes on save; format explicitly when intended.
   "editor.formatOnSave": false,
-  // WHY: Use explicit `uv run` commands instead of auto-activating an environment.
-  "python-envs.terminal.autoActivationType": "off",
 
   "[github-actions-workflow]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
@@ -28,23 +42,12 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[markdown]": {
-    // 2026-04 changed to prettier for markdown files (e.g., README.md)
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-
-  "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": [
-      ".github/workflows/*.yml",
-      ".github/workflows/*.yaml"
-    ]
   }
 }

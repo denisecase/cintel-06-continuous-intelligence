@@ -45,4 +45,4 @@ RUN uv sync --extra dev --extra docs --upgrade
 # EXECUTE: RUN APPLICATION
 # ============================================================
 # WHY: Run the continuous intelligence pipeline module.
-CMD ["uv", "run", "python", "-m", "cintel.continuous_intelligence_case"]
+CMD ["uv", "run", "python", "-m", "cintel.continuous_intelligence"]

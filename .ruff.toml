@@ -1,0 +1,73 @@
+# ============================================================
+# .ruff.toml (ALL-PY-SRC-REPOS)
+# ============================================================
+# Updated: 2026-10-11
+#
+# WHAT: A TOML configuration file for Ruff, a Python linter and formatter.
+#       Linting identifies potential errors and code quality issues.
+#       Formatting applies consistent code layout.
+#
+# WHEN: Use in Python projects with a src/ package.
+#       Ruff reads this file automatically when checking or formatting code.
+#
+# WHY: Maintain consistent Python code quality, formatting,
+#      import organization, and documentation standards.
+#
+# HOW: Open a terminal in the repository root and run:
+#
+#      uv run ruff check .
+#      uv run ruff format --check .
+#
+# TOOLS: Ruff checks Python code and formats source files.
+#        VS Code can display Ruff diagnostics while editing.
+#
+# SKILLS: Python, static analysis, linting, formatting,
+#         import organization, docstrings, and code quality.
+#
+# REQ: Use Ruff's default lint rules with additional docstring checks.
+#
+# OBS: Ruff reports violations of enabled rules.
+# OBS: Per-file exceptions accommodate different kinds of Python files.
+#
+# CUSTOM: Adjust rules and exceptions for project requirements.
+# ============================================================
+
+
+# === PYTHON LINTING ===
+
+[lint]
+# WHY: Extend Ruff's default rules with documentation requirements.
+extend-select = [
+    "D", # WHY: Require Python docstrings.
+]
+
+
+# === IMPORT ORGANIZATION ===
+
+[lint.isort]
+# WHY: Sort plain imports and from-imports together within each section.
+force-sort-within-sections = true
+
+
+# === FILE-SPECIFIC EXCEPTIONS ===
+
+[lint.per-file-ignores]
+# WHY: Package initialization files may intentionally re-export imports.
+"src/**/__init__.py" = ["F401"]
+
+# WHY: Generated version modules should not be linted.
+"src/**/_version.py" = ["ALL"]
+
+# WHY: Tests do not require the same documentation rules as source modules.
+"tests/**/*.py" = ["D", "B018"]
+
+# WHY: Marimo notebooks may contain cell-scoped variables and bare returns
+#      that are appropriate for reactive notebook execution.
+"notebooks/**/*.py" = ["D", "PLR1711", "RUF059"]
+
+
+# === DOCSTRING CONVENTIONS ===
+
+[lint.pydocstyle]
+# WHY: Use Google-style docstrings for Python documentation.
+convention = "google"

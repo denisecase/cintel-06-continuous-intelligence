@@ -1,18 +1,26 @@
 # ============================================================
-# pyproject.toml (ALL-PY-SRC-REPOS)
+# pyproject.toml (Python project configuration)
 # ============================================================
-# REQ: Python projects SHOULD include pyproject.toml as the single source of truth.
-# WHY: Centralizes Python project configuration.
+# Updated: 2026-10-11
+#
+# REQ: All Python src/ projects SHOULD include pyproject.toml.
+# WHAT: Defines project identity, dependencies, and build configuration.
+# WHY: Keeps Python project metadata and package requirements together.
+# CUSTOM: Update project identity, dependencies, and package paths.
 
 # ============================================================
-# === SECTION 1: PROJECT IDENTITY ===
+# === SECTION: PROJECT IDENTITY ===
 # ============================================================
 
 [project]
-name = "cintel" # Package distribution name (lowercase and dashes).
+name = "cintel-06-continuous-intelligence"  # Usually matches repository name (use lowercase and dashes).
 readme = "README.md"
 requires-python = ">=3.14"
 version = "0.1.0"
+
+# ============================================================
+# === SECTION: PROJECT RUNTIME DEPENDENCIES ===
+# ============================================================
 
 dependencies = [
     # REQ: External packages used by the project code.
@@ -21,107 +29,82 @@ dependencies = [
     "polars[rtcompat]",
 ]
 
+# ============================================================
+# === SECTION: DEVELOPMENT AND DOCUMENTATION DEPENDENCIES ===
+# ============================================================
+# These packages support developing, testing, and documenting the project.
+# They are not required to execute the project code.
+
 [dependency-groups]
-# WHY: Optional dependency groups keep the core install clean and focused.
+# WHY: Development and documentation tools support maintaining, validating,
+#      and documenting the project without becoming runtime dependencies.
+
 dev = [
-    # REQ: External packages used for linting, testing, type checking, etc.
-    "prek",       # WHY: Run repository hooks for consistent formatting, linting, and checks.
-    "pytest>=9",  # WHY: Test framework for unit and integration tests.
-    "pytest-cov", # WHY: Test coverage reporting for quality assurance.
-    "ruff",       # WHY: Fast linting and formatting for code quality and consistency.
-    "ty",         # WHY: Type checking for static analysis and bug prevention (replaces pyright).
-]
-docs = [
-    # REQ: External packages used to generate project documentation.
-    "mkdocstrings[python]", # WHY: Auto-generate API docs from docstrings.
-    "zensical",             # WHY: Generate and maintain project documentation.
+    # REQ.DEV.DEPS: Standard tools for Python development and validation.
+    "pytest",     # WHY: Run automated tests.
+    "pytest-cov", # WHY: Measure and report test coverage.
+    "ruff",       # WHY: Lint and format Python code.
+    "ty",         # WHY: Check Python types using static analysis.
 ]
 
+docs = [
+    # REQ.DOCS.DEPS: Standard tools for generating project documentation.
+    "mkdocstrings[python]", # WHY: Generate API documentation from Python docstrings.
+    "zensical",             # WHY: Build the project documentation website.
+]
 
 # ============================================================
-# SECTION 2: TOOL CONFIGURATION
+# === SECTION: TOOL CONFIGURATION ===
 # ============================================================
 
 # === MARIMO REACTIVE NOTEBOOKS ===
 
 [tool.marimo.save]
+# WHY: Automatically save changes after a short delay.
 autosave = "after_delay"
+
+# WHY: Wait 1000 milliseconds after editing before saving.
 autosave_delay = 1000
+
+# WHY: Apply consistent Python formatting when saving.
 format_on_save = true
 
 [tool.marimo.package_management]
+# WHY: Use uv to manage Python dependencies.
 manager = "uv"
 
 [tool.marimo.runtime]
+# WHY: Allow Marimo apps to import project modules from src/.
 pythonpath = ["./src"]
 
-# === PYTEST (VERIFY LOGIC) ===
-
-[tool.pytest.ini_options]
-# WHY: Consistent test discovery and coverage visibility.
-minversion = "9.0"
-testpaths = ["tests"]
-addopts = "--cov=src --cov-fail-under=20 --cov-report=term-missing"
-filterwarnings = [
-    "ignore:FigureCanvasAgg is non-interactive, and thus cannot be shown:UserWarning",
-]
-
-# === RUFF (PYTHON FORMATTING AND LINTING) ===
-
-[tool.ruff.lint] # WHY: Evolve with Ruff's defaults; production might pin an explicit set.
-extend-select = [
-    # --- turn on for additional linting rules ---
-    # "D",  # WHY: Require docstrings; VS Code helps generate them.
-]
-
-[tool.ruff.lint.isort] # WHY: Sort plain-import and from-import lines together within each section.
-force-sort-within-sections = true
-
-[tool.ruff.lint.per-file-ignores] # WHY: Some file types need lint exceptions.
-"src/**/__init__.py" = ["F401"] # Allow re-export patterns.
-"src/**/_version.py" = ["ALL"] # Auto-generated file; do not lint.
-"tests/**/*.py" = ["D", "B018"] # Tests need no docstrings; B018 is default-on.
-"notebooks/**/*.py" = [
-    "D",
-    "PLR1711",
-    "RUF059",
-] # marimo cells: bare returns + cell-scoped unused vars are the format, not defects
-"src/**/notebook.py" = [
-    "B018",
-    "D",
-    "PLR1711",
-    "RUF059",
-] # marimo cells: bare returns + cell-scoped unused vars are the format, not defects
-
-[tool.ruff.lint.pydocstyle] # WHY: Use Google docstring style when D is enabled.
-convention = "google"
 
 # === UV (PYTHON ENVIRONMENT AND DEPENDENCY MANAGEMENT) ===
 
 [tool.uv]
-# WHY: Install all dependency groups defined by this repository by default.
-# OBS: This keeps the canonical `uv sync` command identical across project types
-#      and ensures all repository features work after setup.
+# WHY: Install all dependency groups with the canonical uv sync.
 default-groups = "all"
+
 # WHY: Give a bit of time to find hijacked releases before installing.
 # CUSTOM: Should match `uv run prek update --freeze --cooldown-days 7`
 exclude-newer = "7 days"
+
 # WHY: Some releases must be usable immediately.
 exclude-newer-package = { datafun-toolkit = false, cintel = false }
 
 # ============================================================
-# SECTION 3: BUILD SYSTEM (boilerplate; CUSTOM src/ agreement)
+# === SECTION: BUILD SYSTEM ===
 # ============================================================
 #
-# REQ.PROJECT: A build system MUST be declared for package discovery and publishing.
-# REQ.STRUCTURE: All importable code MUST live under src/.
-# WHY src/ layout: Prevents accidental imports from the repo root;
-#     ensures consistent behavior across IDEs, tests, CI, and PyPI.
+# WHAT: Defines how the project's Python package is built and installed.
+# WHY: Hatchling enables uv to install the local src/ package so
+#      Python modules and tests can import project code consistently.
+# REQ: All importable project code MUST live under src/.
+# CUSTOM: Match the package directory under src/ exactly.
 
 [build-system]
 build-backend = "hatchling.build"
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 
 [tool.hatch.build.targets.wheel]
 # CUSTOM: Must match src/ folders.
-packages = ["src/cintel"] # REQ: Discovery rooted at src/.
+packages = ["src/cintel"] # CUSTOM: Adjust as needed to match the actual package directory under src/.

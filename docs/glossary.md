@@ -5,10 +5,10 @@
 Common terms used in this module:
 
 - **System Monitoring** - observing system behavior using operational metrics
-- **Signal** - a derived metric designed to summarize system behavior
-- **Anomaly** - a value that falls outside expected limits
-- **System State** - an overall interpretation of system health
-- **Operational Decision** - an action taken in response to system behavior
+- **Signal** - a raw or derived metric used to understand system behavior
+- **Anomaly** - an observation or condition that deviates from expectations
+- **System State** - an overall assessment of system condition
+- **Operational Decision** - an action informed by monitoring evidence
 
 ## System Monitoring
 
@@ -22,34 +22,51 @@ Examples:
 
 ## Signal
 
-A **signal** is a derived metric that helps summarize system behavior.
-Signals help analysts understand how a system is performing.
-Signals are often easier to interpret than raw measurements.
-Examples:
+A **signal** is a raw or derived metric used to understand system behavior.
 
+Signals may be direct measurements or values calculated from other metrics.
+Well-designed signals help analysts recognize patterns, detect anomalies,
+and assess system performance.
+
+Examples include:
+
+- request volume
 - error rate
 - average latency
 - throughput
 
 ## Anomaly
 
-An **anomaly** is a value that falls outside the expected range.
-Anomalies may indicate problems or unusual system conditions.
-Examples:
+An **anomaly** is an observation or condition that deviates from
+expected system behavior.
 
-- unusually high error rate
-- unusually slow response time
-- unexpected drop in requests
+Anomalies depend on context, domain knowledge, and defined expectations.
+
+An anomaly does not necessarily indicate a failure.
+It identifies a condition that may warrant investigation.
+
+Examples include:
+
+- unusually high error rates
+- unusually slow response times
+- unexpected drops in requests
 
 ## System State
 
-A summary description of the system’s overall condition.
-System state helps translate monitoring data into operational insight.
-Examples include:
+The **system state** summarizes the overall condition of a monitored system.
 
-- **STABLE**
-- **DEGRADED**
-- **FAILURE**
+System states translate monitoring signals into interpretable assessments.
+
+State classifications depend on the monitoring rules and operational context.
+
+Example classifications include:
+
+- **STABLE** - system behavior is within defined expectations
+- **DEGRADED** - system performance or reliability is reduced
+- **FAILURE** - the system cannot provide one or more required functions
+
+An overall stable state does not necessarily mean that every
+individual observation is free of anomalies.
 
 ## Operational Decision
 

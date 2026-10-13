@@ -1,15 +1,50 @@
 # ============================================================
 # .gitignore (ALL-REPOS)
 # ============================================================
-# Updated: 2026-09-25
+# Updated: 2026-10-11
+#
+# WHAT: A Git configuration file that identifies files and directories
+#       that should not be included in the repository's version history.
+#       Git uses this file to determine which untracked files to ignore.
+#
+# WHEN: Use in professional repositories managed with Git.
+#       Git automatically applies these rules when working with files.
+#
+# WHY: Version the files we create and maintain for this project.
+#      Avoid tracking downloaded dependencies, generated output,
+#      temporary files, local settings, and sensitive information.
+#      Other projects maintain the source code and version history
+#      of their own dependencies.
+#
+# HOW: List file and directory patterns below.
+#      Patterns work across different languages, tools, and project types.
+#      Sections are organized by purpose for easier maintenance.
+#
+#      In VS Code, open the 'Outline view' in the Explorer sidebar to
+#      see and navigate the different sections of this file.
+#      Requires the recommended 'Comment Section Outline' extension
+#      (see .vscode/extensions.json).
+#
+# TOOLS: Git tracks changes to project files and maintains version history.
+#        .gitignore controls which untracked files Git ignores.
+#
+# SKILLS: Git, version control, repository management,
+#         file patterns, dependency management, and project maintenance.
 #
 # REQ: All professional GitHub project repositories MUST include .gitignore.
-# WHY: Keep generated artifacts, local state, secrets, temporary files,
-# machine-specific files, and reproducible build output out of the repository.
-# ALT: Repository may customize ignores, but MUST preserve universal safety rules.
+# REQ: Never commit secrets or private credentials.
+#
+# OBS: .gitignore does not remove files already tracked by Git.
+# OBS: Dependency manifests and lockfiles should generally be committed
+#      even when downloaded dependencies are ignored.
+# OBS: Patterns for unused tools or languages are generally harmless.
+#
+# ALT: Repositories may customize ignores while preserving safety rules.
+# CUSTOM: Delete sections that are not needed for the project.
+# CUSTOM: Add project-specific patterns when necessary.
 #
 # ============================================================
-# === How .gitignore patterns work ===
+# === INTRO: How .gitignore patterns work ===
 # ============================================================
 # NOTE: .gitignore uses glob-style patterns, not regular expressions.
 #
@@ -53,17 +88,9 @@
 # only a repository-root file should be ignored.
 # ============================================================
 
-
-# === Generated files for supported repositories ===
-
-# WHY: Generated analytics and guide-context artifacts should be rebuilt rather
-# than committed.
-# NOTE: These entries are harmless in repositories that do not generate them.
-docs/assets/data/view-analytics.json
-docs/assets/data/guide-context.json
-# marimo WASM export; built at deploy time, not committed
-docs/app/
-
+# ============================================================
+# === SECTION: UNIVERSAL ===
+# ============================================================
 
 # === Environment variables and secrets ===
 
@@ -170,12 +197,17 @@ logs/
 /bin/
 
 
-# === Markup and documentation ===
+# ============================================================
+# === SECTION: PROJECT DOCS ===
+# ============================================================
 
 # WHY: Static site build output is generated from the documentation source.
 # NOTE: Zensical uses site/ as the generated site output directory.
 site/
 
+# ============================================================
+# === SECTION: PYTHON ===
+# ============================================================
 
 # === Python environments ===
 
@@ -239,7 +271,7 @@ coverage.lcov
 .tox/
 
 
-# === Notebooks and marimo ===
+# === Python notebooks and marimo ===
 
 # WHY: Jupyter notebook checkpoint state is generated.
 .ipynb_checkpoints/
@@ -252,7 +284,10 @@ coverage.lcov
 # WHY: These files may be required to reproduce or publish the application.
 
 
-# === Node dependencies ===
+# ============================================================
+# === SECTION: NODE ===
+# ============================================================
+# Some tooling and projects require Node.js and its dependencies.
 
 # WHY: Node dependencies are restored from package-lock.json with npm ci.
 node_modules/
@@ -272,6 +307,9 @@ node_modules/
 .yarn/build-state.yml
 .yarn/install-state.gz
 
+# ============================================================
+# === SECTION: TYPESCRIPT AND JAVASCRIPT ===
+# ============================================================
 
 # === TypeScript and JavaScript build output ===
 
@@ -298,11 +336,34 @@ coverage/
 # WHY: VSIX packages are generated release artifacts.
 *.vsix
 
+# ============================================================
+# === SECTION: COMPUTER-CHECKED MATHEMATICAL PROOFS (LEAN) ===
+# ============================================================
 
-# === pup-up temporary fragments ===
+# === Lean ===
 
-# WHY: pup-up may provide temporary configuration fragments for manual merging.
-# WHY: Ruff settings belong in the repository's authoritative pyproject.toml.
-# NOTE: Remove this rule when pup-up directly reconciles the managed Ruff
-# configuration in pyproject.toml and no longer creates this fragment.
-/pyproject.toml.ruff
+# WHAT: Lean is a programming language and proof assistant used to
+#       express mathematical definitions, theorems, and proofs.
+#       It can also verify properties of software and logical systems.
+#       Lean checks whether formal proofs satisfy their stated rules.
+#
+# WHY: Lake, Lean's project and build tool, generates build files
+#      and downloads dependencies that do not need to be committed.
+.lake/
+lake-packages/
+/docbuild/
+
+
+# ============================================================
+# === SECTION: CUSTOM GENERATED ARTIFACTS ===
+# ============================================================
+
+# === Generated files for supported repositories ===
+
+# WHY: Generated analytics and guide-context artifacts should be rebuilt rather
+# than committed.
+# NOTE: These entries are harmless in repositories that do not generate them.
+docs/assets/data/view-analytics.json
+docs/assets/data/guide-context.json
+# marimo WASM export; built at deploy time, not committed
+docs/app/

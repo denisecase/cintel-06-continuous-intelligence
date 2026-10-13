@@ -1,0 +1,187 @@
+# ============================================================
+# prek.toml (ALL-PY-SRC-REPOS)
+# ============================================================
+# Updated: 2026-10-11
+#
+# WHAT: A configuration file for automated Git hooks.
+#       Git tracks changes to project files and records them in commits.
+#       Git hooks are automated checks that run during Git operations.
+#       prek is a tool that runs these checks and can fix some problems.
+#       TOML is a human-readable data format commonly used for configuration.
+#       This file uses TOML to define which checks prek runs.
+#
+# WHEN: Use in professional Python projects to help maintain reliable,
+#       consistent code, data files, and project documentation.
+#
+# TRIGGER: Once installed, the hooks run automatically before Git commits.
+#          They can also be run manually or through GitHub Actions.
+#          Installing the local hooks is optional.
+#
+# WHY: Small mistakes, such as invalid data files, inconsistent formatting,
+#      unresolved merge conflicts, or accidentally committed large files,
+#      can cause problems later. Automated checks catch many of these
+#      mistakes early, reducing troubleshooting and improving collaboration.
+#
+# CI/CD: Local Git hooks check files before they are committed.
+#        Continuous Integration (CI) can run the same checks on GitHub
+#        after changes are pushed. This supports consistent project quality.
+#        These checks do not deploy or publish the project.
+#
+# SKILLS: Git, Git hooks, prek, automated validation, code quality,
+#         project automation, and CI/CD.
+#
+# TOOLS: prek runs the checks defined in this file.
+#        uvx runs prek without requiring a permanent installation.
+#        Individual hooks perform checks and sometimes fix files.
+#
+# REQ: Professional Python projects SHOULD include Git hooks.
+# REQ: Checks MUST be reproducible locally and in CI.
+#
+# OBS: Related project configuration files include:
+#      .editorconfig (whitespace and indentation conventions)
+#      .gitattributes (Git file and line-ending rules)
+#      pyproject.toml (Python tool settings)
+#
+# OPTIONAL RECOMMENDED INSTALL AND UPDATE:
+#
+#   uvx prek install --force
+#   uvx prek update
+#
+# OPTIONAL RECOMMENDED USAGE (run hooks on all Git-tracked files):
+#
+#   git add -A
+#   uvx prek run --all-files
+#
+# IF CHECKS FAIL: Some hooks automatically fix problems.
+#                 Review the changes, stage them, and run the checks again.
+#
+#   git add -A
+#   uvx prek run --all-files
+#
+# OPTIONAL SKIP: Bypass local Git hooks when necessary.
+#                Use sparingly because it skips these checks.
+#
+#   git commit -m "your message here" --no-verify
+# ============================================================
+
+# ============================================================
+# === GLOBAL SETTINGS ===
+# ============================================================
+
+# Don't check any of these locations
+# WHY: A long list allows us to reuse this file in multiple projects without modification.
+exclude = '''(?x)^(
+    .*\.egg-info/|
+    .*\.log|
+    \.coverage|
+    \.DS_Store|
+    \.ipynb_checkpoints/|
+    \.lake/|
+    \.mypy_cache/|
+    \.nox/|
+    \.pytest_cache/|
+    \.ruff_cache/|
+    \.tox/|
+    \.venv/|
+    __pycache__/|
+    _minted.*/|
+    build/|
+    coverage\.xml|
+    dist/|
+    htmlcov/|
+    lake-packages/|
+    node_modules/|
+    out/|
+    site/
+  )'''
+
+# CUSTOM: Set fail_fast to true to stop at first failure.
+fail_fast = false
+# WHY: Run all hooks so all issues are visible at once.
+
+# ============================================================
+# === REPO: COMMON GIT HOOKS (cross-platform, zero config) ===
+#
+# These hooks prevent problems that show up later as:
+#   - mysterious diffs
+#   - broken builds on another OS
+# ============================================================
+
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+
+# === HOOK: NORMALIZE FILE FORMATTING ===
+
+[[repos.hooks]]
+id = "trailing-whitespace"
+name = "A1) Clean trailing whitespace (per .editorconfig)"
+args = ["--markdown-linebreak-ext=md"]
+# WHY: Preserves markdown double-space line breaks
+
+[[repos.hooks]]
+id = "end-of-file-fixer"
+name = "A2) End files with a newline (per .gitattributes)"
+
+[[repos.hooks]]
+id = "mixed-line-ending"
+name = "A3) Normalize line endings to LF before linters"
+args = ["--fix=lf"]
+exclude = '\.(bat|cmd)$'
+# WHY: Windows batch scripts use CRLF line endings.
+
+# === HOOK: CHECK DATA FILE FORMATS ===
+
+[[repos.hooks]]
+id = "check-json"
+name = "B1) Validate JSON syntax (except .vscode/)"
+exclude = '(^|/)\.vscode/.*\.json$'
+# WHY: VS Code settings may include comments, which are non-standard JSON.
+
+[[repos.hooks]]
+id = "check-toml"
+name = "B2) Validate TOML syntax"
+
+[[repos.hooks]]
+id = "check-yaml"
+name = "B3) Validate YAML syntax"
+files = '\.(yml|yaml)$'
+exclude = '^\.vscode/'
+# WHY: VS Code config files are editor-specific.
+
+# === HOOK: CHECK FOR COMMON PROBLEMS ===
+
+[[repos.hooks]]
+id = "check-added-large-files"
+name = "C1) Prevent accidental commits of large binaries"
+args = ["--maxkb=2000"]
+# WHY: 2MB is a common threshold for large files
+
+[[repos.hooks]]
+id = "check-merge-conflict"
+name = "C2) Prevent committing merge conflicts"
+
+[[repos.hooks]]
+id = "check-case-conflict"
+name = "C3) Check for filename case conflicts"
+
+
+# ============================================================
+# === REPO: RUFF HOOKS (for Python Source code) ===
+# ============================================================
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.17.0"
+
+# === RUFF FORMAT PYTHON ===
+
+[[repos.hooks]]
+id = "ruff-format"
+name = "D1) Ruff format (before linting)"
+
+# === RUFF LINT PYTHON (standard fixes) ===
+
+[[repos.hooks]]
+id = "ruff"
+name = "D2) Ruff linter (autofix errors, style issues )"
+args = ["--fix", "--exit-non-zero-on-fix"]

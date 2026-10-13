@@ -1,128 +1,125 @@
 # Project Instructions
 
-## WEDNESDAY: Complete Workflow Phase 1-3
+## Goal
 
-Follow the instructions in
-[⭐ **Workflow: Apply Example**](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/).
+Combine the techniques developed in earlier projects
+into a working **continuous intelligence pipeline**.
 
-Complete:
+This project integrates:
 
-1. Phase 1. **Start & Run**
-2. Phase 2. **Read & Understand**
-3. Phase 3. **Take Ownership**
+- Module 02: Anomaly Detection
+- Module 03: Signal Design
+- Module 04: Rolling Monitoring
+- Module 05: Drift Detection
 
-## FRIDAY/SUNDAY: Complete Workflow Phases 4-5
+Reuse and adapt your previous work to create
+a unified system for monitoring and assessing system behavior.
 
-Complete:
+## A. Set Up Machine
 
-1. Phase 4. **Make a Technical Modification**
-2. Phase 5. **Apply the Skills to a New Problem**
+Complete [Workflow A: Set Up Machine](https://denisecase.github.io/pro-analytics-02/workflow-a-set-up-machine/)
+if your machine is not ready.
 
-## Topic
+## B. Explore Example Project
 
-System assessment using continuous intelligence techniques.
+Follow [Workflow B: Explore Example Project](https://denisecase.github.io/pro-analytics-02/workflow-b-explore-example-project/).
 
-In this project, you combine several techniques introduced earlier
-in the course to interpret the **current state of a monitored system**.
+Explore how the example:
 
-Continuous intelligence systems often:
+- Reads operational system metrics.
+- Calculates error rate and average latency.
+- Identifies observations exceeding defined thresholds.
+- Summarizes system behavior.
+- Classifies the overall system state.
+- Saves a system assessment artifact.
 
-- measure system activity
-- transform raw data into useful signals
-- detect unusual behavior
-- summarize the overall state of the system
+Consider how rolling monitoring and drift detection
+from earlier modules could contribute to the assessment.
 
-This project demonstrates how those steps work together.
+## C. Start New Project
 
-## Learning Objectives
+Follow [Workflow C: Start New Project](https://denisecase.github.io/pro-analytics-02/workflow-c-start-new-project/).
 
-After completing this project, you should be able to:
+IMPORTANT: New repository name:
+**cintel-06-continuous-intelligence-custom**.
 
-- interpret signals that describe system behavior
-- detect anomalous conditions in system metrics
-- summarize system health using derived signals
-- communicate system state clearly through data artifacts and documentation
+VERIFY: You have completed git add-commit-push to GitHub at least twice.
 
-## Example Code
+## D. Apply Skills
 
-The example file is located in:
+Follow [Workflow D: Apply Skills](https://denisecase.github.io/pro-analytics-02/workflow-d-apply-skills/).
 
-```text
-src/cintel/continuous_intelligence.py
-```
+**Your problem:** Combine the analytical techniques
+from your previous continuous intelligence projects
+into one integrated monitoring system.
 
-It demonstrates:
+Use your previous projects as the foundation.
+No new dataset or analytical technique is required.
 
-- reading system metrics from a dataset
-- designing signals from raw system measurements
-- detecting anomalous signal values
-- summarizing system metrics
-- assigning a simple system health state
+### Progression 1. Your Project Works Like the Example
 
-Run the example and review the code before creating your own version.
+Ensure your new custom project runs like the example.
 
-## Dataset
+Verify that key files have been updated to use **your GitHub account** and
+the **new custom repository name**.
 
-The example dataset is located in the `data/` folder.
+### Progression 2. Make a Technical Modification
 
-Example fields include:
+Extend the example by incorporating
+a technique from one of your previous projects.
 
-- `requests`
-- `errors`
-- `total_latency_ms`
+Reuse and adapt working code rather than
+reimplementing techniques unnecessarily.
 
-Each row represents one observation of system behavior.
+Run the pipeline and verify the additional results.
 
-Signals such as **error rate** and **average latency**
-help analysts interpret system performance.
+### Progression 3. Apply the Skills
 
-## Your Phase 4: Technical Modification Task
+Integrate your work from Modules 02–05
+into a coherent monitoring pipeline.
 
-Using the example as a guide:
+- Reuse your anomaly detection logic.
+- Incorporate your designed monitoring signals.
+- Include rolling monitoring techniques.
+- Include baseline comparisons and drift indicators.
+- Combine the results into a system assessment.
+- Save useful evidence in the `artifacts/` folder.
 
-1. Copy `src/cintel/continuous_intelligence_case.py`.
-2. Rename the copy to `src/cintel/continuous_intelligence_yourname.py`.
-3. Run your copied file to confirm it executes correctly.
-4. Make a small modification to the pipeline.
+Adapt the previous components as needed
+so they work together with compatible data.
 
-Examples of modifications include:
+Explain how the techniques contribute
+to the overall assessment of system behavior.
 
-- adding an additional monitoring signal
-- adding another anomaly condition
-- adjusting system thresholds
-- improving logging or output structure
+The goal is **integration**, not introducing new techniques.
 
-Run the program again and verify that your modification works.
+## E. Finalize Project
 
-## Phase 5: Apply the Skills
+Follow [Workflow E: Finalize Project](https://denisecase.github.io/pro-analytics-02/workflow-e-finalize/).
 
-In this phase, apply the techniques from this course
-to your own monitoring scenario.
+Use `docs/index.md` to report:
 
-You may choose to:
+- Monitoring problem and data.
+- Techniques integrated from earlier projects.
+- How the pipeline components work together.
+- Results, artifacts, and relevant visuals.
+- Overall system assessment and interpretation.
+- Limitations and possible improvements.
 
-- extend the current monitoring pipeline
-- apply the techniques to a different dataset
-- add new signals or anomaly logic
-- experiment with different system health rules
+Include a clickable link to your repository and artifacts.
 
-Describe your approach on the `docs/index.md` page.
+## Success
 
-Explain:
-
-- what signals you used
-- how anomalies were detected
-- how the system state was determined
-- what the results suggest about system behavior
-
-Continuous intelligence systems help organizations
-monitor complex systems and make **informed operational decisions**.
-
-If you would like to apply these skills to a real dataset
-instead of the provided example data, see suggested datasets:
-
-https://denisecase.github.io/pro-analytics-02/reference/datasets/cintel/
+- [ ] README.md project-specific links use **your GitHub account**
+- [ ] README.md project-specific links use **your custom repository name**.
+- [ ] docs/index.md project-specific links use **your GitHub account**
+- [ ] docs/index.md project-specific links use **your custom repository name**.
+- [ ] pyproject.toml `name` has been changed to use **your custom repository name**.
+- [ ] The `src/cintel` folder reflects your authorship and custom work.
+- [ ] All necessary commands are provided and work successfully.
+- [ ] Links to the Professional Python Guide (pro-analytics-02) remain unchanged.
+- [ ] Commit history shows **at least** the git add-commit-push history required in the instructions.
 
 ---
 
-[◄ Back to 🏠 Home](index.md)
+[◄ Back to Home](index.md)

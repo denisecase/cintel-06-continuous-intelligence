@@ -1,0 +1,48 @@
+// ============================================================
+// .markdownlint.jsonc (ALL-REPOS)
+// ============================================================
+// Updated: 2026-10-11
+//
+// WHAT: A configuration file for checking Markdown documentation.
+//       Markdown is a lightweight format for writing documentation.
+//       JSONC is JSON with comments, allowing rules to be explained.
+//       This file tells markdownlint which formatting rules to apply.
+//
+// WHEN: Use in professional projects containing README.md, CHANGELOG.md,
+//       documentation pages, or other Markdown files.
+//
+// WHY: Professional documentation should be consistent, readable,
+//      and easy to maintain. Automated linting helps identify common
+//      formatting problems before documentation is shared or published.
+//      Some rules are relaxed to support practical documentation styles.
+//
+// HOW: The VS Code markdownlint extension reads this configuration
+//      and identifies potential problems while editing Markdown files.
+//      Rules set to false are disabled; other default rules remain enabled.
+//      Project maintainers may also run markdownlint-cli2 separately.
+//
+// SKILLS: Markdown, JSONC, documentation quality, linting,
+//         automated validation, and professional communication.
+//
+// TOOLS: The VS Code markdownlint extension checks Markdown files.
+//        Students do not need Node.js or npx to use the extension.
+//        Maintainers may optionally use markdownlint-cli2 with npx.
+//
+// REQ: Professional repositories SHOULD maintain consistent Markdown.
+// REQ: Disabled rules SHOULD have documented reasons.
+//
+// OBS: This file configures linting but does not modify Markdown files.
+// OBS: Disabled rules do not prevent other Markdown checks from running.
+//
+// SEE: https://github.com/DavidAnson/markdownlint
+// ============================================================
+{
+  "MD013": false, // Allow long lines.
+  "MD024": false, // Allow repeated headings in different sections.
+  "MD025": false, // Allow multiple top-level headings.
+  "MD026": false, // Allow punctuation at the end of headings.
+  "MD033": false, // Allow inline HTML in Markdown.
+  "MD034": false, // Allow URLs without Markdown link syntax.
+  "MD041": false, // Allow content before the first heading.
+  "MD060": false  // Allow different Markdown table formatting styles.
+}

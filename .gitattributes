@@ -1,13 +1,46 @@
 # ============================================================
 # .gitattributes (ALL-REPOS)
 # ============================================================
-# Updated: 2026-09-25
+# Updated: 2026-10-11
 #
-# REQ: All professional GitHub repositories SHOULD include .gitattributes.
-# WHY: Keep line endings, diffs, merges, and file classification consistent
-# across Windows, macOS, Linux, GitHub Actions, and other environments.
+# WHAT: A Git configuration file that defines how Git handles project files.
+#       It identifies text and binary files, controls line endings,
+#       and influences how Git compares and merges files.
+#
+# WHEN: Use in professional projects where files are shared through Git,
+#       particularly across Windows, macOS, and Linux.
+#
+# WHY: Different operating systems and development tools may handle files
+#      differently. Inconsistent line endings can create unnecessary
+#      Git changes, complicate code reviews, and cause execution problems.
+#      Binary files also require different handling than text files.
+#      Shared Git attributes help maintain consistent repository contents
+#      and make changes easier to review and reproduce.
+#
+# HOW: Git reads this file when adding, checking out, comparing, or merging
+#      project files. General rules apply unless more specific rules exist.
+#      Text files normally use LF line endings, while binary files are
+#      preserved without text conversion.
+#
+# SKILLS: Git, Git attributes, line endings, text and binary files,
+#         cross-platform development, version control, and collaboration.
+#
+# TOOLS: Git uses .gitattributes to control file handling.
+#        .editorconfig guides editors when creating and editing files.
+#        Both support consistent formatting across development environments.
+#
+# REQ: Professional GitHub repositories SHOULD include .gitattributes.
+# REQ: The filename MUST be exactly .gitattributes.
+#
+# OBS: .editorconfig and .gitattributes serve complementary purposes.
+#      .editorconfig establishes editor formatting conventions.
+#      .gitattributes establishes Git's rules for handling tracked files.
+#      Neither replaces the other.
+#
 # CUSTOM: Add repository-specific rules when files require different handling.
-# Git attributes: https://git-scm.com/docs/gitattributes
+#
+# SEE: https://git-scm.com/docs/gitattributes
+# ============================================================
 
 
 # === Core defaults ===

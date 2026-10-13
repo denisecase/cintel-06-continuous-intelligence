@@ -1,65 +1,76 @@
 // ============================================================
 // .vscode/extensions.json (ALL-PY-SRC-REPOS)
 // ============================================================
-// Updated: 2026-08-22
-// Basis: cross-platform (all 3 OS), popular, reliable.
-// NOTE: Comments are not allowed in standard JSON files,
-//       but Microsoft allows them in their .vscode config files (JSONC).
-//       "recommendations" prompt on a fresh clone;
-//       "unwantedRecommendations" are hidden.
-//       A formatter named in settings.json should be recommended here
-//       or formatting silently does nothing on a clone.
+// Updated: 2026-10-11
+//
+// WHAT: A configuration file recommending Visual Studio Code extensions.
+//       VS Code extensions add capabilities such as formatting, debugging,
+//       documentation previews, syntax highlighting, and code assistance.
+//       JSONC is JSON with comments, supported by VS Code configuration files.
+//
+// WHEN: Use in professional projects to recommend a consistent set of
+//       development tools for everyone working on the project.
+//
+// WHY: Professional teams often establish recommended development tools.
+//      Shared recommendations make project setup easier, help contributors
+//      work consistently, and reduce configuration problems.
+//      Other extensions may be used according to individual preferences.
+//
+// HOW: VS Code reads this file when the project folder is opened.
+//      It may prompt users to install the recommended extensions.
+//      Recommendations are optional and do not install extensions automatically.
+//      Optional unwanted recommendations are extensions the project discourages;
+//      they do not prevent users from installing them.
+//
+// SKILLS: VS Code, editor extensions, development environments,
+//         project configuration, and team collaboration.
+//
+// REQ: Recommended extensions SHOULD support Windows, macOS, and Linux.
+// REQ: Extensions required by settings.json SHOULD be recommended here.
+// OBS: This is the shared baseline for all repositories.
+//      Language-specific extensions may be added for particular project types.
+// ============================================================
 {
   "recommendations": [
     // ============================================================
-    // === TODO Task Management ===
+    // === MARKDOWN AND DOCUMENTATION ===
     // ============================================================
-    // "gruntfuggly.todo-tree", // TODO comment tracking
-
+    "DavidAnson.vscode-markdownlint", // Check Markdown using .markdownlint.jsonc rules
+    "bierner.markdown-mermaid", // Diagram rendering in markdown (flowcharts, etc.)
+    "bierner.markdown-preview-github-styles", // GitHub-style markdown preview
+    "denisecase.comment-section-outline", // Show "# === Section ===" banners in the Outline view
+    "esbenp.prettier-vscode", // Markdown formatting (see [markdown] in settings.json)
+    "yzhang.markdown-all-in-one", // Shortcuts, TOC, formatting for .md files
+    // ============================================================
+    // === DATA FILES AND CONFIGURATION ===
+    // ============================================================
+    "redhat.vscode-yaml", // YAML syntax, validation, formatting
+    "tamasfe.even-better-toml", // TOML syntax, validation
+    "mechatroner.rainbow-csv", // Color-code CSV columns for readability
+    // ============================================================
+    // === PROJECT INFRASTRUCTURE ===
+    // ============================================================
+    "editorconfig.editorconfig", // Respects .editorconfig settings (indentation, line endings)
+    "github.vscode-github-actions", // Syntax highlighting for .github/workflows/*.yml
     // ============================================================
     // === PYTHON DEVELOPMENT ===
     // ============================================================
-    "ms-python.python", // Core Python support
-    "charliermarsh.ruff", // Modern formatting and linting (replaces black + isort + flake8)
-    "astral-sh.ty", // Fast Python type checking and language support
-
+    "astral-sh.ty", // Python type checking and language support
+    "charliermarsh.ruff", // Python linting and formatting
+    "ms-python.python", // Core Python development support
     // ============================================================
-    // === NOTEBOOKS ===
+    // === PYTHON FILE PATH ASSISTANCE ===
+    // ============================================================
+    "christian-kohler.path-intellisense", // Autocomplete for file paths in Python strings (e.g., "data/file.csv")
+    // NOTE: Terminal autocomplete (tab/right-arrow) is built into the shell (bash/zsh/PowerShell), not VS Code
+    // ============================================================
+    // === PYTHON NOTEBOOKS ===
     // ============================================================
     "marimo-team.vscode-marimo", // Marimo notebook support
     // "ms-toolsai.jupyter", // Core Jupyter support for .ipynb files
     // "ms-toolsai.jupyter-keymap", // Jupyter keyboard shortcuts in VS Code
     // "ms-toolsai.jupyter-renderers", // Rich output rendering (plots, dataframes)
     // "ms-toolsai.vscode-jupyter-cell-tags", // Cell tagging for notebook organization
-
-    // ============================================================
-    // === FILE PATH ASSISTANCE ===
-    // ============================================================
-    "christian-kohler.path-intellisense", // Autocomplete for file paths in Python strings (e.g., "data/file.csv")
-    // NOTE: Terminal autocomplete (tab/right-arrow) is built into your shell (bash/zsh/PowerShell), not VS Code
-
-    // ============================================================
-    // === MARKDOWN AND DOCUMENTATION ===
-    // ============================================================
-    "yzhang.markdown-all-in-one", // Shortcuts, TOC, formatting for .md files
-    "bierner.markdown-preview-github-styles", // GitHub-style markdown preview
-    "esbenp.prettier-vscode", // Markdown formatting (see [markdown] in settings.json)
-    "denisecase.comment-section-outline", // Show "# === Section ===" banners in the Outline view
-    // "bierner.markdown-mermaid", // Diagram rendering in markdown (flowcharts, etc.)
-
-    // ============================================================
-    // === DATA FILES AND CONFIGURATION ===
-    // ============================================================
-    "redhat.vscode-yaml", // YAML syntax, validation, formatting
-    "tamasfe.even-better-toml", // TOML syntax, validation (for pyproject.toml)
-    "mechatroner.rainbow-csv", // Color-code CSV columns for readability
-
-    // ============================================================
-    // === PROJECT INFRASTRUCTURE ===
-    // ============================================================
-    "editorconfig.editorconfig", // Respects .editorconfig settings (indentation, line endings)
-    "github.vscode-github-actions" // Syntax highlighting for .github/workflows/*.yml
-
     // ============================================================
     // === DATABASE TOOLS ===
     // ============================================================
@@ -67,24 +78,14 @@
     // "qwtel.sqlite-viewer", // View .db files as tables in VS Code
     // "ChuckJonas.duckdb", // DuckDB client: query CSV/Parquet/.duckdb in-editor (unofficial; no official ext exists)
     // "RandomFractalsInc.duckdb-sql-tools", // alt: DuckDB SQL Tools (Preview)
-
-    // ============================================================
-    // === OPTIONAL (try if you want) ===
-    // ============================================================
-    // "fill-labs.dependi", // depdency update notifications in VS Code
-    // "usernamehw.errorlens", // Inline error messages - helpful but can be noisy
-    // "eamodio.gitlens", // Git history visualization - powerful but can be noisy
   ],
   "unwantedRecommendations": [
     // ============================================================
-    // === NOT RECOMMENDED: CONFLICTS WITH CURRENT SETUP ===
+    // === ALTERNATIVES TO STANDARD PYTHON TOOLING ===
     // ============================================================
-    "ms-pyright.pyright", // Switching to uv ty for type checking
-    "ms-python.vscode-pylance", // Switching to uv ty for type checking
-    "ms-python.black-formatter", // We use ruff format instead
-    "ms-python.isort", // We use ruff for import sorting
-    "ms-vscode.live-server", // Not needed for Python/analytics projects
-    "ritwickdey.liveserver", // Duplicate of above
-    "ms-vscode-remote.remote-containers" // OPTIONAL: Not recommended - local dev preferred
+    "ms-python.black-formatter", // Ruff handles formatting
+    "ms-python.isort", // Ruff handles import sorting
+    "ms-pyright.pyright", // ty provides type checking
+    "ms-python.vscode-pylance" // ty provides Python language support
   ]
 }
