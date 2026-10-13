@@ -26,7 +26,8 @@ dependencies = [
     # REQ: External packages used by the project code.
     "datafun-toolkit", # WHY: Provides professional Python utilities for privacy-preserving logging.
     "marimo", # WHY: Enables reactive web app for app.py.
-    "polars[rtcompat]",
+    "polars[rtcompat]", # WHY: Fast DataFrame processing; rtcompat supports older CPUs.
+                        # OBS: If Polars causes issues, use pandas and adapt DataFrame operations.
 ]
 
 # ============================================================

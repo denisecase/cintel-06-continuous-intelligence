@@ -5,8 +5,8 @@ Every function below is a marimo cell.
 
 RUN LOCALLY:
 
-  uv run marimo edit app.py     # edit
-  uv run marimo run  app.py     # run as an app (CTRL+c quits)
+  uv run marimo edit src/cintel/app.py     # edit
+  uv run marimo run  src/cintel/app.py     # run as an app (CTRL+c quits)
 
 WASM DEPENDENCIES:
 
