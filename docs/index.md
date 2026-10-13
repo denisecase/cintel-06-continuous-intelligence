@@ -26,7 +26,7 @@ Each observation records:
 The dataset includes a period of elevated
 errors and response times.
 
-[View Example Dataset](https://github.com/denisecase/cintel-06-continuous-intelligence/blob/main/data/system_metrics_case.csv)
+[View Example Dataset](https://github.com/denisecase/cintel-06-continuous-intelligence/blob/main/data/system_metrics.csv)
 
 ## Methods
 
@@ -71,7 +71,7 @@ The example produces the following assessment.
 The pipeline also identifies **7 anomalous observations**
 using its individual-observation thresholds.
 
-[View System Assessment](https://github.com/denisecase/cintel-06-continuous-intelligence/blob/main/artifacts/system_assessment_case.csv)
+[View System Assessment](https://github.com/denisecase/cintel-06-continuous-intelligence/blob/main/artifacts/system_assessment.csv)
 
 ## Interpretation
 

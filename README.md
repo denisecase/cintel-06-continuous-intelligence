@@ -73,7 +73,7 @@ uv run python -m cintel.continuous_intelligence
 ## Results
 
 The pipeline summarizes the monitored signals
-and writes `artifacts/system_assessment_case.csv`.
+and writes `artifacts/system_assessment.csv`.
 Review the resulting system assessment and explain
 which signals support the reported state.
 
