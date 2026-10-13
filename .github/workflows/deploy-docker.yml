@@ -30,7 +30,7 @@ jobs:
 
       - name: Job 1 A1) Checkout repository code
         # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Job 1 A2) Install uv (with caching and uv.lock awareness)
         uses: astral-sh/setup-uv@v7
@@ -62,7 +62,7 @@ jobs:
 
       - name: Job 2 A1) Checkout repository code
         # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Job 2 A2) Build Docker image
         run: docker build -t cintel-continuous-intelligence .
@@ -77,7 +77,7 @@ jobs:
     steps:
       - name: Job 3 A1) Checkout repository code
         # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Job 3 A2) Build Docker image
         run: docker build -t cintel-continuous-intelligence .
