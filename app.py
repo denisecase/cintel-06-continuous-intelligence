@@ -59,9 +59,9 @@ async def _():
     import marimo as mo
     import polars as pl
 
-    from cintel.utils_system import compute_signals, load_system_metrics
+    from cintel.utils_system import design_signals, load_system_metrics
 
-    return compute_signals, load_system_metrics, mo, pl, sys
+    return design_signals, load_system_metrics, mo, pl, sys
 
 
 # === TITLE AND INTRODUCTION ===
@@ -84,7 +84,7 @@ def _(mo):
 
 
 @app.cell
-def _(compute_signals, load_system_metrics, mo, sys):
+def _(design_signals, load_system_metrics, mo, sys):
     """Load system metrics and design signals. Two environments, one cell.
 
     Locally, polars reads the CSV from data/.
@@ -107,7 +107,7 @@ def _(compute_signals, load_system_metrics, mo, sys):
         data_path = notebook_location.parents[1] / "data" / filename
         df = load_system_metrics(data_path)
 
-    df = compute_signals(df)
+    df = design_signals(df)
     return (df,)
 
 

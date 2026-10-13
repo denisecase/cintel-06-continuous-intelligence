@@ -68,7 +68,7 @@ from typing import Final
 from datafun_toolkit.logger import get_logger, log_header, log_path
 import polars as pl
 
-from cintel.utils_system import compute_signals, load_system_metrics
+from cintel.utils_system import design_signals, load_system_metrics
 
 # === CONFIGURE LOGGER ===
 
@@ -126,13 +126,13 @@ def main() -> None:
     # STEP 2: DESIGN SIGNALS
     # ----------------------------------------------------
     # This step connects to Module 3: Signal Design.
-    # compute_signals() adds error_rate, avg_latency_ms, and throughput —
+    # design_signals() adds error_rate, avg_latency_ms, and throughput —
     # the same function cintel-03's signal_design.py uses, unchanged. See
     # utils_system.py for exactly how each signal is built.
 
     LOG.info("STEP 2. Designing signals from raw metrics...")
 
-    df = compute_signals(df)
+    df = design_signals(df)
 
     # ----------------------------------------------------
     # STEP 3: DETECT ANOMALIES
@@ -142,7 +142,7 @@ def main() -> None:
     #
     # This filter is written inline rather than pulled from a utils file —
     # it's specific to combining error_rate and avg_latency_ms for this
-    # project, unlike compute_signals() above, which is reused as-is.
+    # project, unlike design_signals() above, which is reused as-is.
 
     LOG.info("STEP 3. Checking for anomalies in system signals...")
 

@@ -36,7 +36,7 @@ def load_timeseries_metrics(data_file: Path) -> pl.DataFrame:
 # === cintel-03: SIGNAL DESIGN ===
 
 
-def compute_signals(df: pl.DataFrame) -> pl.DataFrame:
+def design_signals(df: pl.DataFrame) -> pl.DataFrame:
     """Add derived signal columns: error_rate, avg_latency_ms, throughput.
 
     Per-request signals are only computed when requests > 0, to avoid
