@@ -86,7 +86,7 @@ pythonpath = ["./src"]
 default-groups = "all"
 
 # WHY: Give a bit of time to find hijacked releases before installing.
-# CUSTOM: Should match `uv run prek update --freeze --cooldown-days 7`
+# CUSTOM: Should match `uvx prek update --freeze --cooldown-days 7`
 exclude-newer = "7 days"
 
 # WHY: Some releases must be usable immediately.

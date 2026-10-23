@@ -60,7 +60,7 @@ See the example file provided.
 2. Open the Actions tab
 3. Select the workflow with the name e.g. `Docker Container and Quality Checks`
 4. Look for:
-   - Job 1 - Run Docker pre-commit
+   - Job 1 - Run Docker Git hooks
    - Job 2 - Build Docker image
    - Job 3 - Run project in container
 5. Click to expand **Job 3 A3) Run project** to see the logs:

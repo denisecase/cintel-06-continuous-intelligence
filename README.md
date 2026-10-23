@@ -161,13 +161,13 @@ In the VS Code terminal,
 paste each command and hit Enter or Return after to run it.
 
 ```shell
-uv run prek install --force
-uv run prek update --freeze --cooldown-days 7
+uvx prek install --force
+uvx prek update --freeze --cooldown-days 7
 
 git add -A
-uv run prek run --all-files
+uvx prek run --all-files
 # repeat if changes were made
-uv run prek run --all-files
+uvx prek run --all-files
 ```
 
 ### Run Common Chores

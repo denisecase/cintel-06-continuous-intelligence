@@ -11,16 +11,19 @@ on:
     branches: [main] # WHY: Run when pushing to main branch.
   workflow_dispatch: # WHY: Allow manual triggering from Actions tab.
 
+permissions: # WHY: Least privilege; this job only needs repository read access.
+  contents: read # WHY: CI validates repository contents and never pushes changes.
+
 env:
   PYTHONUNBUFFERED: "1" # WHY: Real-time logging.
   PYTHONIOENCODING: "utf-8" # WHY: Ensure UTF-8 encoding for international characters.
 
 jobs:
 
-  # === JOB 1: PRE-COMMIT CHECKS: Run pre-commit hooks to ensure code quality before building Docker image. ===
+  # === JOB 1: GIT HOOK CHECKS: Run Git hooks to ensure code quality before building Docker image. ===
 
-  docker-precommit:
-    name: Run Docker pre-commit
+  docker-git-hooks:
+    name: Run Docker git hooks
     runs-on: ubuntu-latest
 
     steps:
@@ -29,30 +32,57 @@ jobs:
       # ============================================================
 
       - name: Job 1 A1) Checkout repository code
-        # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+        # WHY: Required so all subsequent steps can access repo files.
 
       - name: Job 1 A2) Install uv (with caching and uv.lock awareness)
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
-          enable-cache: true # WHY: Speed up installs on subsequent runs
-          cache-dependency-glob: "uv.lock" # WHY: Only re-cache when dependencies change
+          enable-cache: true
+          # WHY: Cache uv-managed artifacts for faster subsequent runs.
+          cache-dependency-glob: "uv.lock"
+          # WHY: Invalidate dependency cache when the committed lockfile changes.
 
-      - name: Job 1 A3) Install Python 3.14 (no repo changes needed)
-        run: uv python install 3.14
+      - name: Job 1 A3) Install project Python
+        run: uv python install
+        # WHY: Ensures the Python version declared in .python-version is available.
+        # OBS: uv manages the interpreter locally in the CI environment.
 
-      - name: Job 1 A4) Sync to install all dependencies
-        run: uv sync --extra dev --extra docs --upgrade
+      - name: Job 1 A4) Install dependencies from committed lockfile
+        run: uv sync --frozen
+        # WHY: Create the project environment exactly from the committed uv.lock.
+        # REQ: CI MUST fail rather than update a stale or incompatible lockfile.
 
-      - name: Job 1 A5)Run pre-commit on all files
-        run: uvx pre-commit run --all-files
+      - name: Job 1 A5) Show tool versions
+        run: |
+          uv --version
+          uv run python --version
+          if [ -f "zensical.toml" ]; then
+            uv run python -m zensical --version
+          fi
+        # WHY: Version output makes CI logs easier to debug when tools change.
 
-  # === JOB 2: DOCKER BUILD: Build Docker image. Depends on pre-commit checks passing. ===
+      - name: Job 1 A6) Run repository hooks on all files (prek)
+        run: uvx prek run --all-files
+        # WHY: Run the same repository hygiene checks used locally.
+        # OBS: uvx runs prek independently of the project environment.
+        # OBS: prek reads the repository's prek.toml configuration.
+        # OBS: A clean commit should already pass without file changes.
+        # OBS: Autofixing hooks may modify the ephemeral CI checkout.
+        #      If they do, the hook runner fails because the committed files
+        #      were not already in their required final state.
+        # FIX: Run uvx prek run --all-files locally, review any autofixes,
+        #      fix remaining issues by hand, then git add, commit, and push.
+
+
+  # === JOB 2: DOCKER BUILD: Build Docker image. Depends on git hook checks passing. ===
 
   docker-build:
     name: Build Docker image
     runs-on: ubuntu-latest
-    needs: docker-precommit
+    needs: docker-git-hooks
 
     steps:
 
@@ -61,8 +91,10 @@ jobs:
       # ============================================================
 
       - name: Job 2 A1) Checkout repository code
-        # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+        # WHY: Required so all subsequent steps can access repo files.
 
       - name: Job 2 A2) Build Docker image
         run: docker build -t cintel-continuous-intelligence .
@@ -76,8 +108,10 @@ jobs:
 
     steps:
       - name: Job 3 A1) Checkout repository code
-        # WHY: Needed to access files for checks.
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+        # WHY: Required so all subsequent steps can access repo files.
 
       - name: Job 3 A2) Build Docker image
         run: docker build -t cintel-continuous-intelligence .
